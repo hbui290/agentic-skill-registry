@@ -1,8 +1,10 @@
 import os
+import re
 
 def main():
     skills_dir = os.path.dirname(os.path.abspath(__file__))
     readme_path = os.path.join(skills_dir, "README.md")
+    tree_path = os.path.join(skills_dir, "DIRECTORY_TREE.md")
     
     if not os.path.exists(skills_dir):
         print(f"Skills directory not found: {skills_dir}")
@@ -57,29 +59,38 @@ def main():
             for skill in structure[macro][sub]:
                 tree_lines.append(f"      - 📄 [{skill}](./{macro}/{sub}/{skill})")
 
-    tree_text = "\n".join(tree_lines) + "\n\n"
+    tree_text = "\n".join(tree_lines) + "\n"
 
-    if not os.path.exists(readme_path):
-        print(f"README.md not found at {readme_path}")
-        return
+    # 1. Write DIRECTORY_TREE.md
+    directory_tree_content = f"""# 🌲 Detailed Directory Tree
 
-    with open(readme_path, 'r', encoding='utf-8') as f:
-        readme_content = f.read()
+This file contains the complete nested structure and direct file links of all registered skills in this library.
+{tree_text}"""
 
-    start_marker = "## 🌲 Detailed Directory Tree"
-    end_marker = "## 📂 Directory Structure Details"
+    with open(tree_path, 'w', encoding='utf-8') as f:
+        f.write(directory_tree_content)
+    print(f"Successfully updated DIRECTORY_TREE.md with {total_skills} skills.")
 
-    if start_marker in readme_content and end_marker in readme_content:
-        start_idx = readme_content.find(start_marker) + len(start_marker)
-        end_idx = readme_content.find(end_marker)
+    # 2. Dynamically update skills count in README.md
+    if os.path.exists(readme_path):
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            readme_content = f.read()
+
+        # Format number with commas (e.g., 1,900)
+        formatted_count = f"{total_skills:,}"
         
-        new_content = readme_content[:start_idx] + "\n" + tree_text + readme_content[end_idx:]
-        
+        # Replace the Total Registered Skills line
+        updated_content = re.sub(
+            r"\*\s+\*\*Total Registered Skills:\*\*\s+\*\*\d+(?:[\.,]\d+)?\*\*",
+            f"*   **Total Registered Skills:** **{formatted_count}**",
+            readme_content
+        )
+
         with open(readme_path, 'w', encoding='utf-8') as f:
-            f.write(new_content)
-        print(f"Successfully updated README.md tree with {total_skills} skills.")
+            f.write(updated_content)
+        print(f"Successfully updated skills count in README.md to {formatted_count}.")
     else:
-        print("Error: Could not find start or end markers in README.md")
+        print(f"Warning: README.md not found at {readme_path}")
 
 if __name__ == "__main__":
     main()
