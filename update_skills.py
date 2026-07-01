@@ -190,13 +190,18 @@ def main():
     print(f"Manifest rebuilt with {len(manifest_entries)} entries.")
     
     print("📝 Updating README.md tree and categories...")
-    gen_script = "/Users/winston/.gemini/antigravity-ide/brain/af6da889-241e-431c-8705-10436511a492/scratch/generate_full_ascii_tree.py"
+    gen_script = os.path.join(skills_dir, "generate_full_ascii_tree.py")
     run_cmd(f"python3 {gen_script}")
     
     print("🛡️ Running path verification checks...")
-    verify_script = "/Users/winston/.gemini/antigravity-ide/brain/af6da889-241e-431c-8705-10436511a492/scratch/verify_exact_skills.py"
+    verify_script = os.path.join(skills_dir, "verify_exact_skills.py")
     success, verify_out = run_cmd(f"python3 {verify_script}")
     print(verify_out)
+
+    print("🔗 Syncing skills to flat directory...")
+    sync_script = os.path.join(skills_dir, "sync_flat_skills.py")
+    success, sync_out = run_cmd(f"python3 {sync_script}")
+    print(sync_out)
 
 if __name__ == "__main__":
     main()
