@@ -14,12 +14,12 @@ To improve search efficiency and avoid I/O bottlenecks in flat directories, the 
 To set up the skills library on a new machine, run this single command in your terminal:
 
 ```bash
-git clone https://github.com/hbui290/antigravity-categorized-skills.git ~/.agents/skills && python3 ~/.agents/skills/scripts/sync_flat_skills.py
+git clone https://github.com/hbui290/antigravity-categorized-skills.git ~/.agents/skills && python3 ~/.agents/skills/scripts/update_skills.py
 ```
 
 This command will:
 1. Clone the repository to your local directory `~/.agents/skills`.
-2. Automatically create the flat-linking directory `~/.agents/flat-skills` and link all 1,900 skills.
+2. Automatically pull the latest upstream skills, run auto-classification, rebuild index/manifests, and establish the flat-linking directory `~/.agents/flat-skills` for MCP.
 
 Next, configure the **`superpowers`** MCP server in your IDE's `mcp_config.json` as described in the [MCP Integration](#-mcp-integration) section below.
 
