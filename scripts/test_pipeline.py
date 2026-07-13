@@ -483,6 +483,36 @@ def _(tmp):
     finally:
         U.data_dir = old
 
+@case("pipeline preflight: missing source index aborts before collection")
+def _(tmp):
+    attrs = ("skills_dir", "manifest_path", "readme_path", "sources_path",
+             "data_dir", "reports_dir", "origins_path", "similars_path",
+             "librarian_index_path", "run_cmd", "collect_source_skills")
+    old = {name: getattr(U, name) for name in attrs}
+    root = os.path.join(tmp, "library")
+    os.makedirs(root)
+    calls = []
+    try:
+        U.skills_dir = root
+        U.manifest_path = os.path.join(root, ".antigravity-install-manifest.json")
+        U.readme_path = os.path.join(root, "README.md")
+        U.sources_path = os.path.join(root, "sources.json")
+        U.data_dir = os.path.join(root, "data")
+        U.reports_dir = os.path.join(root, "reports")
+        U.origins_path = os.path.join(U.data_dir, "origins.json")
+        U.similars_path = os.path.join(U.data_dir, "similars.json")
+        U.librarian_index_path = os.path.join(root, "librarian-index.json")
+        with open(U.sources_path, "w") as f:
+            json.dump({"sources": [{"name": "broken", "git_url": "unused",
+                                     "index_file": "missing.json"}]}, f)
+        U.run_cmd = lambda *a, **k: (True, "")
+        U.collect_source_skills = lambda *a, **k: calls.append(a) or []
+        assert U.main() == 1
+        assert calls == [], "collector ran after metadata preflight failed"
+    finally:
+        for name, value in old.items():
+            setattr(U, name, value)
+
 
 def main():
     failed = 0

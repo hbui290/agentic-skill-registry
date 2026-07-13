@@ -436,6 +436,27 @@ def flat_name_map(entries):
     return {e: (e.replace("/", "-") if counts[os.path.basename(e)] > 1
                 else os.path.basename(e)) for e in entries}
 
+def preflight_sources(sources):
+    prepared = []
+    clones_ok = True
+    metadata_ok = True
+    for source in sources:
+        print(f"🚀 Fetching source '{source['name']}' from {source['git_url']}...")
+        temp_dir = tempfile.mkdtemp()
+        success, _ = run_cmd(
+            ["git", "clone", "--depth", "1", source["git_url"], temp_dir])
+        if not success:
+            clones_ok = False
+            print(f"❌ Failed to clone {source['name']} — skipping this source.")
+            shutil.rmtree(temp_dir)
+            continue
+        if not refresh_upstream_cache(source, temp_dir):
+            metadata_ok = False
+            shutil.rmtree(temp_dir)
+            continue
+        prepared.append((source, temp_dir))
+    return prepared, clones_ok, metadata_ok
+
 def main():
     cfg = load_json(sources_path, None)
     if not cfg or not cfg.get("sources"):
@@ -443,6 +464,13 @@ def main():
         return 1
     sources = sorted(cfg["sources"], key=lambda s: s.get("priority", 99))
     primary = sources[0]["name"]
+
+    prepared_sources, clones_ok, metadata_ok = preflight_sources(sources)
+    if not metadata_ok:
+        for _, temp_dir in prepared_sources:
+            shutil.rmtree(temp_dir)
+        print("❌ Source metadata preflight failed — library state was not updated.")
+        return 1
 
     origins = load_json(origins_path, {})
     similars = load_json(similars_path, {})
@@ -455,23 +483,9 @@ def main():
     report = {"collisions": [], "similars": [], "multi_origin": [], "errors": []}
     new_names = []
     totals = {"updated": 0, "unchanged": 0, "new": 0}
-    ok = True
+    ok = clones_ok
 
-    for src in sources:
-        print(f"🚀 Fetching source '{src['name']}' from {src['git_url']}...")
-        temp_dir = tempfile.mkdtemp()
-        success, _ = run_cmd(["git", "clone", "--depth", "1", src["git_url"], temp_dir])
-        if not success:
-            ok = False
-            print(f"❌ Failed to clone {src['name']} — skipping this source.")
-            shutil.rmtree(temp_dir)
-            continue
-
-        # Refresh metadata atomically; never leave a stale cache when a source
-        # no longer provides its declared machine-readable index.
-        if not refresh_upstream_cache(src, temp_dir):
-            ok = False
-
+    for src, temp_dir in prepared_sources:
         current_mapping, ambiguous_names = get_current_skill_mapping()
 
         for name, src_path in collect_source_skills(temp_dir, src.get("layout", "root")):
