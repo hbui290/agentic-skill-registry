@@ -50,6 +50,26 @@ def sync_skill(src_path, dest_skill_dir):
         shutil.rmtree(dest_skill_dir, ignore_errors=True)
     return ok
 
+def _remove_path(path):
+    if os.path.islink(path) or os.path.isfile(path):
+        os.unlink(path)
+    elif os.path.isdir(path):
+        shutil.rmtree(path)
+
+def sweep_sync_dirs():
+    parent = os.path.dirname(flat_dir)
+    name = os.path.basename(flat_dir)
+    stage = os.path.join(parent, f".{name}.tmp-sync")
+    backup = os.path.join(parent, f".{name}.bak-sync")
+    os.makedirs(parent, exist_ok=True)
+    if not os.path.exists(flat_dir) and os.path.exists(backup):
+        os.replace(backup, flat_dir)
+    elif os.path.exists(flat_dir) and os.path.exists(backup):
+        _remove_path(backup)
+    if os.path.exists(stage):
+        _remove_path(stage)
+    return stage, backup
+
 def main():
     if not os.path.exists(manifest_path):
         print("Manifest file not found!")
@@ -60,8 +80,12 @@ def main():
         
     entries = data.get("entries", [])
 
-    # Clean flat_dir
-    ok = clean_dir(flat_dir)
+    try:
+        stage, backup = sweep_sync_dirs()
+        os.makedirs(stage)
+    except Exception as e:
+        print(f"Error preparing flat sync: {e}")
+        return 1
 
     # Shared flat-naming rule (same helper the librarian index uses)
     from update_skills import flat_name_map
@@ -80,15 +104,35 @@ def main():
             duplicates_resolved += 1
 
         # Sync to flat_dir
-        dest_flat_dir = os.path.join(flat_dir, symlink_name)
+        dest_flat_dir = os.path.join(stage, symlink_name)
         if sync_skill(src_path, dest_flat_dir):
             created_flat += 1
         else:
-            ok = False
+            _remove_path(stage)
+            print(f"Flat directory: Sync failed after {created_flat} skills; active directory preserved.")
+            return 1
+
+    try:
+        had_active = os.path.exists(flat_dir)
+        if had_active:
+            os.replace(flat_dir, backup)
+        try:
+            os.replace(stage, flat_dir)
+        except Exception:
+            if had_active and os.path.exists(backup) and not os.path.exists(flat_dir):
+                os.replace(backup, flat_dir)
+            if os.path.exists(stage):
+                _remove_path(stage)
+            raise
+        if os.path.exists(backup):
+            _remove_path(backup)
+    except Exception as e:
+        print(f"Error replacing flat directory: {e}")
+        return 1
             
     print(f"Flat directory: Synced {created_flat} skills.")
     print(f"Resolved {duplicates_resolved} duplicate names.")
-    return 0 if ok else 1
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -331,10 +331,12 @@ def _(tmp):
             S.skills_dir, ".antigravity-install-manifest.json")
         rel = "ai-and-data/misc/tool"
         mkskill(S.skills_dir, f"{rel}/SKILL.md")
+        mkskill(S.flat_dir, "old-skill/SKILL.md")
         with open(S.manifest_path, "w") as f:
             json.dump({"entries": [rel]}, f)
         S.os.symlink = lambda *a: (_ for _ in ()).throw(OSError("forced"))
         assert S.main() == 1
+        assert os.path.isfile(os.path.join(S.flat_dir, "old-skill", "SKILL.md"))
     finally:
         S.skills_dir, S.flat_dir, S.manifest_path, S.os.symlink = old
 
