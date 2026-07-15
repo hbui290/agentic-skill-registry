@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "source_id": "legacy-local",
+      "url": "https://github.com/hbui290/agentic-library.git",
+      "commit": "a3f3ac3bb434884b9847cf6df43a534ec00a6d71",
+      "layout": "legacy-snapshot",
+      "skills_root": "",
+      "metadata_index": "librarian-index.json",
+      "license_note": "Per-skill metadata preserved from the migration snapshot"
+    },
+    {
+      "source_id": "sickn33-agentic-awesome-skills",
+      "url": "https://github.com/sickn33/agentic-awesome-skills.git",
+      "commit": "82c86e65677aa1b40fa8207f95bc43766494a3db",
+      "layout": "skills-subdir",
+      "skills_root": "skills",
+      "metadata_index": "skills_index.json",
+      "license_note": "Per-skill licenses tracked by the source index"
+    }
+  ]
+}

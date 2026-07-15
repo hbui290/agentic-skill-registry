@@ -1,0 +1,31 @@
+{
+  "records": [
+    {
+      "catalog_path": "catalog/workflows-and-management/planning-and-execution/linear",
+      "content_sha256": "038f04ab8ed6ac6e285951ff4d6363e98c11ddea901797b3ec554fab229759fa",
+      "disposition": "quarantined",
+      "first_seen_date": "2026-07-15",
+      "name": "linear",
+      "rule_ids": [
+        "missing-skill-md"
+      ],
+      "skill_id": "asr_a94f930da863c865",
+      "source_commit": "a3f3ac3bb434884b9847cf6df43a534ec00a6d71",
+      "source_id": "legacy-local"
+    },
+    {
+      "catalog_path": "catalog/engineering/tooling-and-monorepos/SPDD",
+      "content_sha256": "c4477e1e62e96c0a9b688880525d46ccf79819b76a5770c9355464f1755ea59c",
+      "disposition": "quarantined",
+      "first_seen_date": "2026-07-15",
+      "name": "SPDD",
+      "rule_ids": [
+        "missing-skill-md"
+      ],
+      "skill_id": "asr_c5910b994e034997",
+      "source_commit": "a3f3ac3bb434884b9847cf6df43a534ec00a6d71",
+      "source_id": "legacy-local"
+    }
+  ],
+  "schema_version": 1
+}
