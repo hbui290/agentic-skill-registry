@@ -25,3 +25,15 @@ risk is `safe`; strict verification rejects every other Core member:
 ```bash
 PYTHONPATH=pipeline python -m skill_registry.cli verify --strict
 ```
+
+## Upstream review boundary
+
+`registry/upstream-review.json` records the skill-level delta from the pinned
+secondary source to commit `5e31f236726a988e833b39215d140b2173bf05c0`. It
+contains 10 new Markdown-only candidates and 3 modified Markdown-only skills,
+all kept in review. Two changed skills carry executable changes and remain
+quarantined: `skills/git-pushing` and `skills/telegram-bot-messaging`.
+
+The report is evidence, not an import queue. No reviewed entry is copied into
+the catalog, promoted to Core, or allowed to change the pinned source commit
+until its contents and license have been reviewed in a separate change.
