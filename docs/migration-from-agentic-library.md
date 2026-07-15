@@ -37,3 +37,7 @@ quarantined: `skills/git-pushing` and `skills/telegram-bot-messaging`.
 The report is evidence, not an import queue. No reviewed entry is copied into
 the catalog, promoted to Core, or allowed to change the pinned source commit
 until its contents and license have been reviewed in a separate change.
+
+Phase 5 reviewed the 10 new Markdown-only entries. Nine are marked `critical`
+by upstream metadata and one is marked `offensive`; none is eligible for import
+or Core admission under this registry's safety policy.
