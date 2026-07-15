@@ -4,7 +4,13 @@ from pathlib import Path
 import pytest
 
 from skill_registry.hashing import tree_sha256
-from skill_registry.runtime import RegistryRuntimeError, search_skills
+from skill_registry.runtime import (
+    RegistryRuntimeError,
+    SkillBlocked,
+    SkillConfirmationRequired,
+    read_skill,
+    search_skills,
+)
 
 
 def build_registry(root: Path, specs: list[dict[str, object]]) -> list[dict[str, object]]:
@@ -159,3 +165,85 @@ def test_search_ties_are_sorted_by_load_name(tmp_path):
     )
     matches = search_skills(tmp_path, "shared")["matches"]
     assert [item["load_name"] for item in matches] == ["alpha", "zeta"]
+
+
+def test_read_allows_safe_skill_and_returns_only_instructions(tmp_path):
+    record = build_registry(tmp_path, [{"name": "safe-doc", "risk": "safe", "core": True}])[0]
+    result = read_skill(tmp_path, record["load_name"])
+    assert result["skill"]["skill_id"] == record["skill_id"]
+    assert result["skill"]["core"] is True
+    assert result["instructions"].startswith("---\nname: safe-doc")
+
+
+@pytest.mark.parametrize("risk", ["unknown", "review"])
+def test_read_requires_confirmation_for_unreviewed_skill(tmp_path, risk):
+    record = build_registry(tmp_path, [{"name": "unreviewed", "risk": risk}])[0]
+    with pytest.raises(SkillConfirmationRequired, match=risk):
+        read_skill(tmp_path, record["skill_id"])
+    result = read_skill(tmp_path, record["skill_id"], allow_unreviewed=True)
+    assert result["skill"]["risk"] == risk
+
+
+def test_read_blocks_dangerous_even_with_override(tmp_path):
+    record = build_registry(tmp_path, [{"name": "danger", "risk": "dangerous"}])[0]
+    with pytest.raises(SkillBlocked, match="dangerous"):
+        read_skill(tmp_path, record["skill_id"], allow_unreviewed=True)
+
+
+def test_read_blocks_quarantined_inactive_and_missing_skills(tmp_path):
+    inactive = build_registry(tmp_path, [{"name": "inactive", "risk": "safe", "state": "deprecated"}])[0]
+    quarantine = {"skill_id": "asr_ffffffffffffffff", "name": "blocked", "disposition": "quarantined"}
+    (tmp_path / "registry" / "quarantine.json").write_text(
+        json.dumps({"schema_version": 1, "records": [quarantine]}), encoding="utf-8"
+    )
+    with pytest.raises(SkillBlocked, match="quarantined"):
+        read_skill(tmp_path, quarantine["skill_id"])
+    with pytest.raises(SkillBlocked, match="not active"):
+        read_skill(tmp_path, inactive["skill_id"])
+    with pytest.raises(SkillBlocked, match="not found"):
+        read_skill(tmp_path, "missing")
+
+
+def test_read_blocks_catalog_escape(tmp_path):
+    record = build_registry(tmp_path, [{"name": "candidate", "risk": "safe"}])[0]
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "SKILL.md").write_text("---\nname: candidate\ndescription: escaped\n---\n")
+    record["catalog_path"] = "outside"
+    record["content_sha256"] = tree_sha256(outside)
+    (tmp_path / "registry" / "skills.json").write_text(
+        json.dumps({"schema_version": 1, "skills": [record]}), encoding="utf-8"
+    )
+    with pytest.raises(SkillBlocked, match="outside catalog"):
+        read_skill(tmp_path, record["skill_id"])
+
+
+def test_read_blocks_symlink_and_hash_mismatch(tmp_path):
+    record = build_registry(tmp_path, [{"name": "candidate", "risk": "safe"}])[0]
+    skill_root = tmp_path / record["catalog_path"]
+    (skill_root / "linked").symlink_to(tmp_path / "outside")
+    with pytest.raises(SkillBlocked, match="unsafe skill tree"):
+        read_skill(tmp_path, record["skill_id"])
+
+    (skill_root / "linked").unlink()
+    (skill_root / "SKILL.md").write_text(
+        (skill_root / "SKILL.md").read_text(encoding="utf-8") + "modified\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(SkillBlocked, match="hash mismatch"):
+        read_skill(tmp_path, record["skill_id"])
+
+
+def test_read_never_executes_bundled_scripts(tmp_path):
+    record = build_registry(tmp_path, [{"name": "safe-doc", "risk": "safe"}])[0]
+    skill_root = tmp_path / record["catalog_path"]
+    sentinel = tmp_path / "executed"
+    script = skill_root / "run.sh"
+    script.write_text(f"#!/bin/sh\ntouch '{sentinel}'\n", encoding="utf-8")
+    script.chmod(0o755)
+    record["content_sha256"] = tree_sha256(skill_root)
+    (tmp_path / "registry" / "skills.json").write_text(
+        json.dumps({"schema_version": 1, "skills": [record]}), encoding="utf-8"
+    )
+    read_skill(tmp_path, record["skill_id"])
+    assert not sentinel.exists()

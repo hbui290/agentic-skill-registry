@@ -2,6 +2,8 @@ import json
 import re
 from pathlib import Path
 
+from skill_registry.hashing import UnsafeCatalogPath, tree_sha256
+
 
 TOKEN = re.compile(r"[a-z0-9]+")
 
@@ -104,3 +106,67 @@ def search_skills(root: Path, query: str, limit: int = 10) -> dict[str, object]:
         )
     matches.sort(key=lambda item: (-int(item["score"]), str(item["load_name"])))
     return {"query": query, "matches": matches[:limit]}
+
+
+def _records(root: Path, filename: str, key: str) -> list[dict[str, object]]:
+    value = _load_object(root / "registry" / filename).get(key, [])
+    if not isinstance(value, list) or not all(isinstance(item, dict) for item in value):
+        raise RegistryRuntimeError(f"invalid registry/{filename}")
+    return value
+
+
+def read_skill(root: Path, identifier: str, allow_unreviewed: bool = False) -> dict[str, object]:
+    skills = _records(root, "skills.json", "skills")
+    quarantine = _records(root, "quarantine.json", "records")
+    core = set(_load_object(root / "registry" / "core.json").get("skill_ids", []))
+
+    if any(
+        identifier in {str(item.get("skill_id", "")), str(item.get("name", ""))}
+        for item in quarantine
+    ):
+        raise SkillBlocked(f"quarantined skill: {identifier}")
+    matches = [
+        item
+        for item in skills
+        if identifier in {str(item.get("skill_id", "")), str(item.get("load_name", ""))}
+    ]
+    if len(matches) != 1:
+        raise SkillBlocked(f"skill not found or ambiguous: {identifier}")
+    record = matches[0]
+    if record.get("state") != "active":
+        raise SkillBlocked(f"skill is not active: {identifier}")
+    risk = str(record.get("risk", ""))
+    if risk == "dangerous":
+        raise SkillBlocked(f"dangerous skill blocked: {identifier}")
+    if risk in {"unknown", "review"} and not allow_unreviewed:
+        raise SkillConfirmationRequired(f"confirmation required for {risk} skill: {identifier}")
+    if risk not in {"safe", "unknown", "review"}:
+        raise SkillBlocked(f"unsupported risk state: {risk}")
+
+    catalog = (root / "catalog").resolve()
+    path = (root / str(record.get("catalog_path", ""))).resolve()
+    if not path.is_relative_to(catalog):
+        raise SkillBlocked(f"skill path outside catalog: {identifier}")
+    marker = path / "SKILL.md"
+    if not marker.is_file():
+        raise SkillBlocked(f"SKILL.md missing: {identifier}")
+    try:
+        observed = tree_sha256(path)
+    except (OSError, UnsafeCatalogPath) as error:
+        raise SkillBlocked(f"unsafe skill tree: {error}") from error
+    if observed != record.get("content_sha256"):
+        raise SkillBlocked(f"hash mismatch: {identifier}")
+
+    return {
+        "skill": {
+            "skill_id": record["skill_id"],
+            "load_name": record["load_name"],
+            "risk": risk,
+            "risk_reasons": record["risk_reasons"],
+            "core": record["skill_id"] in core,
+            "source_id": record["source_id"],
+            "source_commit": record["source_commit"],
+            "license": record["license"],
+        },
+        "instructions": marker.read_text(encoding="utf-8"),
+    }
