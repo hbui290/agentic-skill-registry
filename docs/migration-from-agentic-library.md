@@ -5,6 +5,34 @@ now lives under `catalog/`. The original repository remains unchanged and is
 configured as the read-only `upstream` remote. Operational updates remain
 disabled until the pinned proposal pipeline is delivered.
 
+## Runtime replacement
+
+The old flattened skill directory and third-party Superpowers MCP bridge are
+retired. They made discovery look like installation and did not provide the
+registry's state, risk, path, or hash enforcement.
+
+The supported runtime now has three explicit parts:
+
+1. `skill-registry search` finds candidates from the local discovery index and
+   authoritative registry records.
+2. `skill-registry read` enforces policy and returns only one selected
+   `SKILL.md` at a time.
+3. `skills/skill-librarian` is the only native skill installed from this repo;
+   it chooses and composes 1–5 domain playbooks for the main agent.
+
+Official Superpowers remains separately installed from Obra/OpenAI and is not
+forked, patched, or routed through this repository. It owns process guidance;
+the Librarian owns domain-skill selection.
+
+Set the canonical clone root before using the runtime:
+
+```bash
+export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-registry"
+```
+
+Do not install the complete `catalog/`, expose it as a native skill directory,
+or automatically execute scripts shipped beside a selected `SKILL.md`.
+
 ## Source refresh and Core admission
 
 Check whether a locked source has a newer upstream commit without changing the
