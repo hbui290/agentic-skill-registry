@@ -10,6 +10,7 @@ from typing import Callable
 import yaml
 
 from skill_registry.hashing import tree_sha256
+from skill_registry.text import jaccard, tokenize
 
 
 SOURCE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}$")
@@ -27,6 +28,123 @@ SOURCE_FIELDS = ("source_id", "url", "commit", "skills_root", "license", "licens
 
 class IntakeError(RuntimeError):
     pass
+
+
+def propose_classification(
+    candidate: dict[str, object], index: list[dict[str, object]]
+) -> dict[str, str]:
+    candidate_tokens = tokenize(
+        f"{candidate.get('name', '')} {candidate.get('description', '')}"
+    )
+    scores: dict[tuple[str, str], int] = {}
+    for entry in index:
+        taxonomy = str(entry.get("taxonomy", ""))
+        category = str(entry.get("category_fine", ""))
+        entry_tokens = tokenize(
+            f"{entry.get('name', '')} {entry.get('description', '')} "
+            f"{taxonomy} {category}"
+        )
+        overlap = len(candidate_tokens & entry_tokens)
+        if overlap:
+            key = (taxonomy, category)
+            scores[key] = scores.get(key, 0) + overlap
+
+    if scores:
+        taxonomy, category = min(
+            scores, key=lambda key: (-scores[key], key[0], key[1])
+        )
+    else:
+        taxonomy = "workflows-and-management/uncategorized-and-misc"
+        category = "uncategorized"
+    return {
+        "taxonomy": taxonomy,
+        "category_fine": category,
+        "classification_status": "proposed",
+    }
+
+
+def _normalized_name(value: object) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(value).lower()).strip("-")
+
+
+def duplicate_evidence(
+    candidate: dict[str, object],
+    records: list[dict[str, object]],
+    index: list[dict[str, object]],
+) -> list[dict[str, object]]:
+    index_by_skill_id = {
+        str(entry["skill_id"]): entry for entry in index if "skill_id" in entry
+    }
+    index_by_load_name = {
+        str(entry.get("flat_name", entry.get("name", ""))): entry for entry in index
+    }
+    candidate_name = _normalized_name(candidate.get("name", ""))
+    candidate_load_name = str(candidate.get("load_name", ""))
+    candidate_tokens = tokenize(
+        f"{candidate.get('name', '')} {candidate.get('description', '')}"
+    )
+    evidence: list[dict[str, object]] = []
+
+    for record in records:
+        skill_id = str(record["skill_id"])
+        if candidate.get("content_sha256") == record.get("content_sha256"):
+            evidence.append(
+                {
+                    "kind": "exact_hash",
+                    "skill_id": skill_id,
+                    "action": "canonical_candidate",
+                }
+            )
+        if (
+            candidate.get("source_id") == record.get("source_id")
+            and candidate.get("source_path") == record.get("source_path")
+        ):
+            evidence.append(
+                {
+                    "kind": "same_source_path",
+                    "skill_id": skill_id,
+                    "action": "update_review",
+                }
+            )
+
+        existing_names = {
+            _normalized_name(record.get("name", "")),
+            _normalized_name(record.get("load_name", "")),
+        }
+        if (
+            (candidate_name and candidate_name in existing_names)
+            or (
+                candidate_load_name
+                and candidate_load_name == record.get("load_name")
+            )
+        ):
+            evidence.append(
+                {
+                    "kind": "name_collision",
+                    "skill_id": skill_id,
+                    "action": "review",
+                }
+            )
+
+        metadata = index_by_skill_id.get(skill_id) or index_by_load_name.get(
+            str(record.get("load_name", ""))
+        )
+        if metadata is not None:
+            existing_tokens = tokenize(
+                f"{metadata.get('name', '')} {metadata.get('description', '')}"
+            )
+            similarity = jaccard(candidate_tokens, existing_tokens)
+            if similarity >= 0.75:
+                evidence.append(
+                    {
+                        "kind": "functional_similarity",
+                        "skill_id": skill_id,
+                        "score": similarity,
+                        "action": "review",
+                    }
+                )
+
+    return sorted(evidence, key=lambda item: (str(item["kind"]), str(item["skill_id"])))
 
 
 def validate_source_spec(spec: object) -> dict[str, str]:

@@ -44,6 +44,44 @@ def make_skill(parent, name, extra_files=None):
     return bundle
 
 
+def discovery(name, taxonomy, category, description, skill_id=None):
+    value = {
+        "name": name,
+        "flat_name": name,
+        "taxonomy": taxonomy,
+        "category_fine": category,
+        "description": description,
+    }
+    if skill_id is not None:
+        value["skill_id"] = skill_id
+    return value
+
+
+def candidate(**changes):
+    value = {
+        "source_id": "new-source",
+        "source_path": "skills/new-skill",
+        "name": "new-skill",
+        "load_name": "new-skill",
+        "description": "Review Python tests",
+        "content_sha256": "b" * 64,
+    }
+    value.update(changes)
+    return value
+
+
+def existing(**changes):
+    value = {
+        "skill_id": "asr_existing",
+        "source_id": "existing-source",
+        "source_path": "skills/existing",
+        "load_name": "existing-skill",
+        "content_sha256": "a" * 64,
+    }
+    value.update(changes)
+    return value
+
+
 @pytest.mark.parametrize(
     "url",
     [
@@ -463,3 +501,138 @@ def test_inspect_bundle_returns_metadata_counts_and_hash(tmp_path):
     assert result["file_count"] == 2
     assert result["byte_count"] == sum(path.stat().st_size for path in bundle.rglob("*") if path.is_file())
     assert len(result["content_sha256"]) == 64
+
+
+def test_classification_aggregates_existing_taxonomy_votes():
+    value = {"name": "pytest-helper", "description": "Test Python code with pytest"}
+    index = [
+        discovery("unit-tests", "engineering/testing", "testing", "pytest unit testing"),
+        discovery("test-review", "engineering/testing", "testing", "review automated tests"),
+        discovery("pdf", "documents/pdf", "documents", "edit PDF files"),
+    ]
+
+    assert intake.propose_classification(value, index) == {
+        "taxonomy": "engineering/testing",
+        "category_fine": "testing",
+        "classification_status": "proposed",
+    }
+
+
+def test_classification_falls_back_when_no_terms_match():
+    assert intake.propose_classification(
+        {"name": "xyzzy", "description": "plugh"}, []
+    ) == {
+        "taxonomy": "workflows-and-management/uncategorized-and-misc",
+        "category_fine": "uncategorized",
+        "classification_status": "proposed",
+    }
+
+
+def test_classification_breaks_score_ties_lexicographically():
+    value = {"name": "python-helper", "description": "Review Python"}
+    index = [
+        discovery("python", "zeta/testing", "zeta", "review"),
+        discovery("python", "alpha/testing", "alpha", "review"),
+    ]
+
+    assert intake.propose_classification(value, index)["taxonomy"] == "alpha/testing"
+
+
+def test_duplicate_evidence_detects_exact_hash():
+    evidence = intake.duplicate_evidence(
+        candidate(content_sha256="a" * 64), [existing()], []
+    )
+
+    assert evidence == [
+        {
+            "kind": "exact_hash",
+            "skill_id": "asr_existing",
+            "action": "canonical_candidate",
+        }
+    ]
+
+
+def test_duplicate_evidence_detects_same_source_path():
+    evidence = intake.duplicate_evidence(
+        candidate(source_id="existing-source", source_path="skills/existing"),
+        [existing()],
+        [],
+    )
+
+    assert evidence == [
+        {
+            "kind": "same_source_path",
+            "skill_id": "asr_existing",
+            "action": "update_review",
+        }
+    ]
+
+
+def test_duplicate_evidence_detects_name_collision():
+    evidence = intake.duplicate_evidence(
+        candidate(load_name="existing-skill"), [existing()], []
+    )
+
+    assert evidence == [
+        {
+            "kind": "name_collision",
+            "skill_id": "asr_existing",
+            "action": "review",
+        }
+    ]
+
+
+def test_duplicate_evidence_detects_normalized_name_collision():
+    evidence = intake.duplicate_evidence(
+        candidate(name="Existing Skill", load_name="new-skill"), [existing()], []
+    )
+
+    assert evidence == [
+        {
+            "kind": "name_collision",
+            "skill_id": "asr_existing",
+            "action": "review",
+        }
+    ]
+
+
+def test_duplicate_evidence_marks_similarity_for_review_only():
+    evidence = intake.duplicate_evidence(
+        candidate(name="python-test-review", description="security"),
+        [existing(load_name="python-test-audit")],
+        [
+            discovery(
+                "python-test-audit",
+                "engineering/testing",
+                "testing",
+                "python test review security",
+                skill_id="asr_existing",
+            )
+        ],
+    )
+
+    assert evidence == [
+        {
+            "kind": "functional_similarity",
+            "skill_id": "asr_existing",
+            "score": 0.8,
+            "action": "review",
+        }
+    ]
+    assert not {"decision", "canonical_skill_id", "state", "risk"}.intersection(
+        evidence[0]
+    )
+
+
+def test_duplicate_evidence_is_sorted_by_kind_and_skill_id():
+    records = [
+        existing(skill_id="asr_zeta", content_sha256="b" * 64),
+        existing(skill_id="asr_alpha", content_sha256="b" * 64),
+    ]
+
+    evidence = intake.duplicate_evidence(candidate(), records, [])
+
+    assert [(item["kind"], item["skill_id"]) for item in evidence] == [
+        ("exact_hash", "asr_alpha"),
+        ("exact_hash", "asr_zeta"),
+    ]
