@@ -1,6 +1,8 @@
+import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import tempfile
 import urllib.request
@@ -10,6 +12,8 @@ from typing import Callable
 import yaml
 
 from skill_registry.hashing import tree_sha256
+from skill_registry.filesystem import dump_json_atomic, load_json
+from skill_registry.identity import stable_skill_id
 from skill_registry.text import jaccard, tokenize
 
 
@@ -24,6 +28,7 @@ MAX_BUNDLE_BYTES = 50 * 1024 * 1024
 MAX_SOURCE_FILES = 10_000
 MAX_SOURCE_BYTES = 250 * 1024 * 1024
 SOURCE_FIELDS = ("source_id", "url", "commit", "skills_root", "license", "license_note")
+SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 class IntakeError(RuntimeError):
@@ -394,3 +399,189 @@ def inspect_bundle(bundle: Path) -> dict[str, object]:
         "byte_count": total,
         "content_sha256": tree_sha256(bundle),
     }
+
+
+def _object_list(path: Path, key: str) -> list[dict[str, object]]:
+    try:
+        payload = load_json(path)
+    except (OSError, json.JSONDecodeError) as error:
+        raise IntakeError(f"cannot read {path}: {error}") from error
+    if not isinstance(payload, dict):
+        raise IntakeError(f"expected object: {path}")
+    values = payload.get(key)
+    if not isinstance(values, list) or not all(isinstance(item, dict) for item in values):
+        raise IntakeError(f"invalid {key}: {path}")
+    return values
+
+
+def prepare_source(root: Path, spec: object, staging: Path) -> dict[str, object]:
+    root = Path(root)
+    staging = Path(staging)
+    if staging.exists() or staging.is_symlink():
+        raise IntakeError(f"staging already exists: {staging}")
+    if staging.resolve().is_relative_to(root.resolve()):
+        raise IntakeError(f"staging must not be inside repository: {staging}")
+    normalized = validate_source_spec(spec)
+    sources = _object_list(root / "registry" / "sources.lock.json", "sources")
+    if any(source.get("source_id") == normalized["source_id"] for source in sources):
+        raise IntakeError(f"source_id already exists: {normalized['source_id']}")
+
+    records = _object_list(root / "registry" / "skills.json", "skills")
+    records += _object_list(root / "registry" / "quarantine.json", "records")
+    index = _object_list(root / "librarian-index.json", "entries")
+
+    preflight_source_tree(normalized)
+    candidates: list[dict[str, object]] = []
+    with tempfile.TemporaryDirectory(prefix="asr-source-") as temporary:
+        checkout = Path(temporary) / "source"
+        checkout_pinned_source(normalized, checkout)
+        for bundle in discover_source_bundles(checkout / normalized["skills_root"]):
+            source_path = bundle.relative_to(checkout).as_posix()
+            inspected = inspect_bundle(bundle)
+            classification = propose_classification(inspected, index)
+            evidence = duplicate_evidence(
+                {
+                    **inspected,
+                    "source_id": normalized["source_id"],
+                    "source_path": source_path,
+                    "load_name": inspected["name"],
+                },
+                records,
+                index,
+            )
+            candidates.append(
+                {
+                    "source_path": source_path,
+                    "name": inspected["name"],
+                    "description": inspected["description"],
+                    "content_sha256": inspected["content_sha256"],
+                    "file_count": inspected["file_count"],
+                    "byte_count": inspected["byte_count"],
+                    "proposed_taxonomy": classification["taxonomy"],
+                    "proposed_category_fine": classification["category_fine"],
+                    "duplicate_evidence": evidence,
+                }
+            )
+
+    candidates.sort(key=lambda candidate: str(candidate["source_path"]))
+    manifest: dict[str, object] = {
+        "schema_version": 1,
+        "source": normalized,
+        "candidates": candidates,
+    }
+    staging.mkdir()
+    try:
+        manifest_path = staging / "manifest.json"
+        dump_json_atomic(manifest_path, manifest)
+        manifest_bytes = manifest_path.read_bytes()
+        review = {
+            "schema_version": 1,
+            "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "decisions": [
+                {
+                    "source_path": candidate["source_path"],
+                    "decision": "pending",
+                    "taxonomy": candidate["proposed_taxonomy"],
+                    "category_fine": candidate["proposed_category_fine"],
+                    "canonical_skill_id": None,
+                    "reason": "",
+                }
+                for candidate in candidates
+            ],
+        }
+        dump_json_atomic(staging / "review.json", review)
+    except Exception:
+        shutil.rmtree(staging)
+        raise
+    return manifest
+
+
+def validate_review(
+    manifest_bytes: bytes,
+    review: object,
+    known_skill_ids: set[str],
+) -> None:
+    try:
+        manifest = json.loads(manifest_bytes)
+    except (TypeError, UnicodeError, json.JSONDecodeError) as error:
+        raise IntakeError(f"manifest is invalid: {error}") from error
+    if not isinstance(manifest, dict):
+        raise IntakeError("manifest must be an object")
+    source = manifest.get("source")
+    candidates = manifest.get("candidates")
+    if not isinstance(source, dict) or not isinstance(source.get("source_id"), str):
+        raise IntakeError("manifest source is invalid")
+    if not isinstance(candidates, list) or not all(
+        isinstance(candidate, dict) and isinstance(candidate.get("source_path"), str)
+        for candidate in candidates
+    ):
+        raise IntakeError("manifest candidates are invalid")
+
+    if not isinstance(review, dict) or set(review) != {
+        "schema_version",
+        "manifest_sha256",
+        "decisions",
+    }:
+        raise IntakeError("review fields are invalid")
+    if review["schema_version"] != 1:
+        raise IntakeError("review schema_version is invalid")
+    expected_digest = hashlib.sha256(manifest_bytes).hexdigest()
+    if review["manifest_sha256"] != expected_digest:
+        raise IntakeError("manifest digest mismatch")
+    decisions = review["decisions"]
+    if not isinstance(decisions, list) or not all(
+        isinstance(decision, dict) for decision in decisions
+    ):
+        raise IntakeError("review decisions are invalid")
+
+    manifest_paths = [str(candidate["source_path"]) for candidate in candidates]
+    review_paths = [decision.get("source_path") for decision in decisions]
+    if len(set(manifest_paths)) != len(manifest_paths):
+        raise IntakeError("manifest source paths are duplicated")
+    if (
+        not all(isinstance(path, str) for path in review_paths)
+        or len(set(review_paths)) != len(review_paths)
+        or set(review_paths) != set(manifest_paths)
+    ):
+        raise IntakeError("review must contain exactly one decision per candidate")
+
+    required_fields = {
+        "source_path",
+        "decision",
+        "taxonomy",
+        "category_fine",
+        "canonical_skill_id",
+        "reason",
+    }
+    for decision in decisions:
+        if set(decision) != required_fields:
+            raise IntakeError("review decision fields are invalid")
+        action = decision["decision"]
+        if action not in {"import", "canonical", "quarantine", "reject"}:
+            raise IntakeError("review decision is invalid")
+        reason = decision["reason"]
+        if not isinstance(reason, str) or not reason.strip():
+            raise IntakeError("review reason is required")
+        taxonomy = decision["taxonomy"]
+        taxonomy_parts = taxonomy.split("/") if isinstance(taxonomy, str) else []
+        if len(taxonomy_parts) != 2 or not all(
+            SLUG.fullmatch(part) for part in taxonomy_parts
+        ):
+            raise IntakeError("review taxonomy is invalid")
+        category = decision["category_fine"]
+        if not isinstance(category, str) or SLUG.fullmatch(category) is None:
+            raise IntakeError("review category is invalid")
+
+        canonical_skill_id = decision["canonical_skill_id"]
+        self_skill_id = stable_skill_id(
+            source["source_id"], str(decision["source_path"])
+        )
+        if action == "canonical":
+            if (
+                not isinstance(canonical_skill_id, str)
+                or canonical_skill_id not in known_skill_ids
+                or canonical_skill_id == self_skill_id
+            ):
+                raise IntakeError("canonical target is invalid")
+        elif canonical_skill_id is not None:
+            raise IntakeError("non-canonical decision cannot have a canonical target")

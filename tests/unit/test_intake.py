@@ -1,11 +1,19 @@
+import copy
+import hashlib
 import io
 import json
 import os
+import shutil
 import subprocess
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import pytest
 
 from skill_registry import intake
+from skill_registry import filesystem
+from skill_registry.identity import stable_skill_id
 from skill_registry.intake import (
     IntakeError,
     checkout_pinned_source,
@@ -28,6 +36,11 @@ def valid_source_spec(**changes):
     }
     value.update(changes)
     return value
+
+
+def write_json(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
 
 def make_skill(parent, name, extra_files=None):
@@ -80,6 +93,134 @@ def existing(**changes):
     }
     value.update(changes)
     return value
+
+
+def repository_digest(root):
+    digest = hashlib.sha256()
+    paths = list((root / "registry").rglob("*")) + list((root / "catalog").rglob("*"))
+    paths.append(root / "librarian-index.json")
+    for path in sorted(
+        (item for item in paths if item.is_file()), key=lambda item: item.as_posix()
+    ):
+        digest.update(path.relative_to(root).as_posix().encode())
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+@pytest.fixture
+def valid_root(tmp_path):
+    root = tmp_path / "repo"
+    (root / "catalog").mkdir(parents=True)
+    source = {
+        "source_id": "existing-source",
+        "url": "https://github.com/example/existing.git",
+        "commit": "a" * 40,
+        "layout": "skills-subdir",
+        "skills_root": "skills",
+        "metadata_index": "",
+        "license_note": "Fixture source license",
+        "status": "active",
+        "refreshable": True,
+        "timeout_seconds": 15,
+    }
+    write_json(
+        root / "registry/sources.lock.json",
+        {"schema_version": 1, "sources": [source]},
+    )
+    write_json(root / "registry/skills.json", {"schema_version": 1, "skills": []})
+    write_json(
+        root / "registry/quarantine.json", {"schema_version": 1, "records": []}
+    )
+    write_json(root / "librarian-index.json", {"schemaVersion": 1, "entries": []})
+    return root
+
+
+@pytest.fixture
+def fake_checkout(tmp_path, monkeypatch):
+    upstream = tmp_path / "upstream"
+    make_skill(upstream / "skills", "new-skill")
+
+    def checkout(spec, destination):
+        shutil.copytree(upstream, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 1, "byte_count": 100},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+    return upstream
+
+
+@pytest.fixture
+def prepared_paths(valid_root, tmp_path, fake_checkout):
+    stage = tmp_path / "stage"
+    intake.prepare_source(valid_root, valid_source_spec(), stage)
+    review_path = stage / "review.json"
+    review = json.loads(review_path.read_text())
+    review["decisions"][0].update(
+        {
+            "decision": "import",
+            "reason": "Fixture candidate reviewed",
+            "taxonomy": "engineering/testing",
+            "category_fine": "testing",
+            "canonical_skill_id": None,
+        }
+    )
+    write_json(review_path, review)
+    return stage / "manifest.json", review_path
+
+
+@pytest.fixture
+def manifest(prepared_paths):
+    return prepared_paths[0]
+
+
+@pytest.fixture
+def valid_review(prepared_paths):
+    return json.loads(prepared_paths[1].read_text())
+
+
+def apply_review_mutation(review, mutation):
+    decisions = review["decisions"]
+    if mutation == "pending_decision":
+        decisions[0]["decision"] = "pending"
+    elif mutation == "missing_candidate":
+        decisions.pop()
+    elif mutation == "extra_candidate":
+        extra = copy.deepcopy(decisions[0])
+        extra["source_path"] = "skills/extra"
+        decisions.append(extra)
+    elif mutation == "duplicate_candidate":
+        decisions.append(copy.deepcopy(decisions[0]))
+    elif mutation == "empty_reason":
+        decisions[0]["reason"] = ""
+    elif mutation == "invalid_taxonomy":
+        decisions[0]["taxonomy"] = "../escape"
+    elif mutation == "invalid_category":
+        decisions[0]["category_fine"] = "Not A Slug"
+    elif mutation == "canonical_without_target":
+        decisions[0].update({"decision": "canonical", "canonical_skill_id": None})
+    elif mutation == "unknown_canonical_target":
+        decisions[0].update(
+            {"decision": "canonical", "canonical_skill_id": "asr_ffffffffffffffff"}
+        )
+    elif mutation == "self_canonical_target":
+        decisions[0].update(
+            {
+                "decision": "canonical",
+                "canonical_skill_id": stable_skill_id(
+                    "new-source", decisions[0]["source_path"]
+                ),
+            }
+        )
+    elif mutation == "noncanonical_with_target":
+        decisions[0]["canonical_skill_id"] = "asr_existing"
+    elif mutation == "manifest_digest_mismatch":
+        review["manifest_sha256"] = "0" * 64
+    else:
+        raise AssertionError(mutation)
 
 
 @pytest.mark.parametrize(
@@ -635,4 +776,223 @@ def test_duplicate_evidence_is_sorted_by_kind_and_skill_id():
     assert [(item["kind"], item["skill_id"]) for item in evidence] == [
         ("exact_hash", "asr_alpha"),
         ("exact_hash", "asr_zeta"),
+    ]
+
+
+def test_prepare_source_does_not_mutate_repository(valid_root, tmp_path, fake_checkout):
+    before = repository_digest(valid_root)
+
+    payload = intake.prepare_source(
+        valid_root, valid_source_spec(), tmp_path / "stage"
+    )
+
+    assert repository_digest(valid_root) == before
+    assert payload == json.loads((tmp_path / "stage/manifest.json").read_text())
+
+
+def test_prepare_source_rejects_existing_source_id(valid_root, tmp_path, fake_checkout):
+    spec = valid_source_spec(source_id="existing-source")
+
+    with pytest.raises(IntakeError, match="source_id already exists"):
+        intake.prepare_source(valid_root, spec, tmp_path / "stage")
+
+
+@pytest.mark.parametrize("kind", ["directory", "symlink"])
+def test_prepare_source_rejects_and_preserves_existing_staging(
+    kind, valid_root, tmp_path, fake_checkout
+):
+    staging = tmp_path / "stage"
+    preserved = tmp_path / "preserved"
+    preserved.mkdir()
+    marker = preserved / "marker.txt"
+    marker.write_text("keep\n", encoding="utf-8")
+    if kind == "directory":
+        staging.mkdir()
+        (staging / "marker.txt").write_text("keep\n", encoding="utf-8")
+        expected_marker = staging / "marker.txt"
+    else:
+        staging.symlink_to(preserved, target_is_directory=True)
+        expected_marker = marker
+
+    with pytest.raises(IntakeError, match="staging already exists"):
+        intake.prepare_source(valid_root, valid_source_spec(), staging)
+
+    assert staging.exists()
+    assert expected_marker.read_text(encoding="utf-8") == "keep\n"
+
+
+def test_prepare_source_rejects_staging_inside_repository_without_mutation(
+    valid_root, fake_checkout
+):
+    staging = valid_root / "staging"
+    before = repository_digest(valid_root)
+
+    with pytest.raises(IntakeError, match="inside repository"):
+        intake.prepare_source(valid_root, valid_source_spec(), staging)
+
+    assert repository_digest(valid_root) == before
+    assert not staging.exists()
+
+
+def test_prepare_source_is_deterministic(valid_root, tmp_path, fake_checkout):
+    first = intake.prepare_source(valid_root, valid_source_spec(), tmp_path / "a")
+    second = intake.prepare_source(valid_root, valid_source_spec(), tmp_path / "b")
+
+    assert first == second
+    assert "prepared_at" not in first
+
+
+def test_prepare_source_builds_expected_candidate(valid_root, tmp_path, fake_checkout):
+    payload = intake.prepare_source(
+        valid_root, valid_source_spec(), tmp_path / "stage"
+    )
+
+    assert payload["schema_version"] == 1
+    assert payload["source"] == valid_source_spec()
+    assert payload["candidates"] == [
+        {
+            "source_path": "skills/new-skill",
+            "name": "new-skill",
+            "description": "Use new-skill.",
+            "content_sha256": payload["candidates"][0]["content_sha256"],
+            "file_count": 1,
+            "byte_count": 65,
+            "proposed_taxonomy": "workflows-and-management/uncategorized-and-misc",
+            "proposed_category_fine": "uncategorized",
+            "duplicate_evidence": [],
+        }
+    ]
+
+
+def test_prepare_binds_review_to_exact_manifest(valid_root, tmp_path, fake_checkout):
+    intake.prepare_source(valid_root, valid_source_spec(), tmp_path / "stage")
+    manifest_bytes = (tmp_path / "stage/manifest.json").read_bytes()
+    review = json.loads((tmp_path / "stage/review.json").read_text())
+
+    assert review == {
+        "schema_version": 1,
+        "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        "decisions": [
+            {
+                "source_path": "skills/new-skill",
+                "decision": "pending",
+                "taxonomy": "workflows-and-management/uncategorized-and-misc",
+                "category_fine": "uncategorized",
+                "canonical_skill_id": None,
+                "reason": "",
+            }
+        ],
+    }
+
+
+def test_prepare_source_removes_staging_when_review_write_fails(
+    valid_root, tmp_path, fake_checkout, monkeypatch
+):
+    staging = tmp_path / "stage"
+    real_dump = intake.dump_json_atomic
+    calls = 0
+
+    def fail_second_write(path, value):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise OSError("injected review write failure")
+        real_dump(path, value)
+
+    monkeypatch.setattr(intake, "dump_json_atomic", fail_second_write)
+
+    with pytest.raises(OSError, match="injected review write failure"):
+        intake.prepare_source(valid_root, valid_source_spec(), staging)
+
+    assert not staging.exists()
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "pending_decision",
+        "missing_candidate",
+        "extra_candidate",
+        "duplicate_candidate",
+        "empty_reason",
+        "invalid_taxonomy",
+        "invalid_category",
+        "canonical_without_target",
+        "unknown_canonical_target",
+        "self_canonical_target",
+        "noncanonical_with_target",
+        "manifest_digest_mismatch",
+    ],
+)
+def test_validate_review_rejects_incomplete_contract(
+    mutation, manifest, valid_review
+):
+    apply_review_mutation(valid_review, mutation)
+
+    with pytest.raises(IntakeError):
+        intake.validate_review(
+            manifest.read_bytes(), valid_review, known_skill_ids={"asr_existing"}
+        )
+
+
+def test_validate_review_accepts_complete_contract(manifest, valid_review):
+    assert (
+        intake.validate_review(
+            manifest.read_bytes(), valid_review, known_skill_ids={"asr_existing"}
+        )
+        is None
+    )
+
+
+def test_dump_json_atomic_removes_temporary_file_when_replace_fails(
+    tmp_path, monkeypatch
+):
+    target = tmp_path / "payload.json"
+    unrelated = tmp_path / ".payload.json.tmp"
+    unrelated.write_text("preserve\n", encoding="utf-8")
+    attempted_temporary = None
+
+    def fail_replace(self, target):
+        nonlocal attempted_temporary
+        attempted_temporary = self
+        raise OSError("injected replace failure")
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+
+    with pytest.raises(OSError, match="injected replace failure"):
+        filesystem.dump_json_atomic(target, {"value": "example"})
+
+    assert attempted_temporary is not None
+    assert not attempted_temporary.exists()
+    assert unrelated.read_text(encoding="utf-8") == "preserve\n"
+    assert not target.exists()
+
+
+def test_dump_json_atomic_uses_distinct_temporary_files_for_concurrent_writers(
+    tmp_path, monkeypatch
+):
+    target = tmp_path / "payload.json"
+    barrier = threading.Barrier(2)
+    temporaries = []
+    real_replace = Path.replace
+
+    def synchronized_replace(self, target):
+        temporaries.append(self)
+        barrier.wait(timeout=2)
+        return real_replace(self, target)
+
+    monkeypatch.setattr(Path, "replace", synchronized_replace)
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(filesystem.dump_json_atomic, target, {"writer": writer})
+            for writer in (1, 2)
+        ]
+        for future in futures:
+            future.result(timeout=3)
+
+    assert len(set(temporaries)) == 2
+    assert all(path.parent == tmp_path for path in temporaries)
+    assert json.loads(target.read_text(encoding="utf-8")) in [
+        {"writer": 1},
+        {"writer": 2},
     ]
