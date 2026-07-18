@@ -1,4 +1,4 @@
-# Agentic Skill Registry
+# Agentic Skill Library
 
 > A verified, on-demand skill library for AI agents.
 
@@ -61,15 +61,15 @@ It does **not** mean the skill is safe to load without review.
 Requirements: Python 3.11+ and Git.
 
 ```bash
-git clone https://github.com/hbui290/agentic-skill-registry.git \
-  ~/.agents/agentic-skill-registry
-cd ~/.agents/agentic-skill-registry
+git clone https://github.com/hbui290/agentic-skill-library.git \
+  ~/.agents/agentic-skill-library
+cd ~/.agents/agentic-skill-library
 
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
 
-export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-registry"
+export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-library"
 skill-registry verify --strict
 ```
 

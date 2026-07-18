@@ -12,7 +12,7 @@ Use this skill when the right domain skill is unclear, specialized knowledge is 
 Use the configured local registry:
 
 ```bash
-REGISTRY_ROOT="${AGENTIC_SKILL_REGISTRY_ROOT:-$HOME/.agents/agentic-skill-registry}"
+REGISTRY_ROOT="${AGENTIC_SKILL_REGISTRY_ROOT:-$HOME/.agents/agentic-skill-library}"
 ```
 
 The registry CLI is the only discovery and loading runtime. Do not inspect or load catalog entries directly.

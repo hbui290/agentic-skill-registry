@@ -27,7 +27,7 @@ the Librarian owns domain-skill selection.
 Set the canonical clone root before using the runtime:
 
 ```bash
-export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-registry"
+export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-library"
 ```
 
 Do not install the complete `catalog/`, expose it as a native skill directory,
