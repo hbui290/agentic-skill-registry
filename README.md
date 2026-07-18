@@ -34,6 +34,7 @@ installed natively.
 ## What it does not do
 
 - It does not bulk-install the catalog into Codex.
+- Automatic bulk import is disabled.
 - It does not treat every active skill as safe.
 - It does not run bundled scripts, grant credentials, or widen permissions.
 - It does not use MCP, embeddings, vector databases, hosted search, or a
