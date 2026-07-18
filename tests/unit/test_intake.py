@@ -1253,6 +1253,9 @@ def test_commit_rejects_existing_catalog_destination(
 def test_commit_rolls_back_catalog_and_json_on_write_failure(
     valid_root, manifest, prepared_paths, monkeypatch
 ):
+    sentinel = valid_root / "catalog/keep/sentinel.txt"
+    sentinel.parent.mkdir(parents=True)
+    sentinel.write_text("keep")
     before = repository_digest(valid_root)
     original_bytes = {
         path.relative_to(valid_root).as_posix(): path.read_bytes()
@@ -1274,15 +1277,75 @@ def test_commit_rolls_back_catalog_and_json_on_write_failure(
         real_write(path, value)
 
     monkeypatch.setattr(intake, "dump_json_atomic", fail_on_second_write)
+    monkeypatch.setattr(intake, "_require_clean_worktree", lambda root: None)
 
     with pytest.raises(OSError, match="injected transaction write failure"):
         intake.commit_source(valid_root, manifest, prepared_paths[1])
 
     assert repository_digest(valid_root) == before
     assert not (valid_root / "catalog/engineering").exists()
+    assert sentinel.read_text() == "keep"
     assert {
         path: (valid_root / path).read_bytes() for path in original_bytes
     } == original_bytes
+
+
+def test_commit_preflight_failure_preserves_json_metadata(
+    valid_root, manifest, prepared_paths, monkeypatch
+):
+    paths = [
+        valid_root / "registry/sources.lock.json",
+        valid_root / "registry/skills.json",
+        valid_root / "registry/quarantine.json",
+        valid_root / "librarian-index.json",
+    ]
+    for path in paths:
+        path.chmod(0o640)
+    before = {
+        path: (path.read_bytes(), path.stat().st_mode, path.stat().st_mtime_ns)
+        for path in paths
+    }
+
+    def fail_preflight(*args, **kwargs):
+        raise IntakeError("injected preflight failure")
+
+    monkeypatch.setattr(intake, "preflight_source_tree", fail_preflight)
+
+    with pytest.raises(IntakeError, match="injected preflight failure"):
+        intake.commit_source(valid_root, manifest, prepared_paths[1])
+
+    assert {
+        path: (path.read_bytes(), path.stat().st_mode, path.stat().st_mtime_ns)
+        for path in paths
+    } == before
+
+
+def test_commit_first_json_write_failure_preserves_json_metadata(
+    valid_root, manifest, prepared_paths, monkeypatch
+):
+    paths = [
+        valid_root / "registry/sources.lock.json",
+        valid_root / "registry/skills.json",
+        valid_root / "registry/quarantine.json",
+        valid_root / "librarian-index.json",
+    ]
+    before = {
+        path: (path.read_bytes(), path.stat().st_mode, path.stat().st_mtime_ns)
+        for path in paths
+    }
+
+    def fail_first_write(*args, **kwargs):
+        raise OSError("injected first write failure")
+
+    monkeypatch.setattr(intake, "dump_json_atomic", fail_first_write)
+
+    with pytest.raises(OSError, match="injected first write failure"):
+        intake.commit_source(valid_root, manifest, prepared_paths[1])
+
+    assert {
+        path: (path.read_bytes(), path.stat().st_mode, path.stat().st_mtime_ns)
+        for path in paths
+    } == before
 
 
 def test_commit_rolls_back_parent_created_before_later_mkdir_failure(

@@ -12,7 +12,7 @@ from typing import Callable
 import yaml
 
 from skill_registry.hashing import tree_sha256
-from skill_registry.filesystem import dump_json_atomic, load_json
+from skill_registry.filesystem import dump_json_atomic, load_json, write_bytes_atomic
 from skill_registry.identity import stable_skill_id
 from skill_registry.text import jaccard, tokenize
 from skill_registry.validator import verify_repository
@@ -694,22 +694,7 @@ def _require_clean_worktree(root: Path) -> None:
 
 
 def _restore_bytes_atomic(path: Path, content: bytes) -> None:
-    temporary = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="wb",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".rollback",
-            delete=False,
-        ) as handle:
-            temporary = Path(handle.name)
-            handle.write(content)
-        temporary.replace(path)
-    except Exception:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-        raise
+    write_bytes_atomic(path, content)
 
 
 def _validate_commit_objects(
@@ -845,7 +830,8 @@ def commit_source(
         root / "registry/quarantine.json",
         root / "librarian-index.json",
     ]
-    original_bytes = {path: path.read_bytes() for path in json_paths}
+    original_bytes: dict[Path, bytes] = {}
+    json_mutation_started = False
     sources_payload = _load_json_object(json_paths[0])
     skills_payload = _load_json_object(json_paths[1])
     quarantine_payload = _load_json_object(json_paths[2])
@@ -1043,6 +1029,7 @@ def commit_source(
                 temporary_copies.remove(temporary_copy)
                 created_destinations.append(destination)
 
+            original_bytes = {path: path.read_bytes() for path in json_paths}
             for path, payload in zip(
                 json_paths,
                 [
@@ -1053,6 +1040,7 @@ def commit_source(
                 ],
             ):
                 dump_json_atomic(path, payload)
+                json_mutation_started = True
             dump_json_atomic(artifact_path, artifact)
             artifact_created = True
             report = verify_repository(root)
@@ -1064,8 +1052,9 @@ def commit_source(
                     f"post-commit strict verification failed: {', '.join(check_ids)}"
                 )
     except Exception:
-        for path, content in original_bytes.items():
-            _restore_bytes_atomic(path, content)
+        if json_mutation_started:
+            for path, content in original_bytes.items():
+                _restore_bytes_atomic(path, content)
         if artifact_created:
             artifact_path.unlink(missing_ok=True)
         for temporary_copy in temporary_copies:

@@ -39,6 +39,11 @@ skill-registry prepare-source \
   --format json
 ```
 
+`commit-source` is exception-safe: if an in-process validation or write fails,
+it restores only files and catalog directories created by that transaction. A
+process kill or power loss still requires `git status`, strict verification,
+and, if needed, a Git revert.
+
 Preparation treats all upstream content as untrusted. It uses a constrained,
 non-interactive checkout, does not run source scripts or install dependencies,
 and does not change the repository. Stop if the candidate count, target path,

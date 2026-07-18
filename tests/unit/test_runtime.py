@@ -268,6 +268,15 @@ def test_read_blocks_symlink_and_hash_mismatch(tmp_path):
         read_skill(tmp_path, record["skill_id"])
 
 
+def test_unknown_hash_mismatch_blocks_before_confirmation(tmp_path):
+    record = build_registry(tmp_path, [{"name": "candidate", "risk": "unknown"}])[0]
+    skill_root = tmp_path / record["catalog_path"]
+    (skill_root / "SKILL.md").write_text("modified\n", encoding="utf-8")
+
+    with pytest.raises(SkillBlocked, match="hash mismatch"):
+        read_skill(tmp_path, record["skill_id"])
+
+
 def test_read_never_executes_bundled_scripts(tmp_path):
     record = build_registry(tmp_path, [{"name": "safe-doc", "risk": "safe"}])[0]
     skill_root = tmp_path / record["catalog_path"]

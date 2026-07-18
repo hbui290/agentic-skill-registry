@@ -85,7 +85,8 @@ echo "$?"  # 3: confirmation required; no instructions returned
 
 The confirmation response includes the source ID, pinned commit, source path,
 license, registered hash, risk, and risk reasons. `--allow-unreviewed` reruns
-the read after approval; it does not bypass integrity checks.
+the read after approval; it does not bypass integrity checks. Confirmation is
+returned only after the catalog path, symlink, and content-hash checks pass.
 
 Dangerous, quarantined, inactive, escaped-path, unsafe-symlink, and hash-failed
 skills are blocked and have no override.

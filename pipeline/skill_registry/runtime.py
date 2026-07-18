@@ -151,10 +151,6 @@ def read_skill(root: Path, identifier: str, allow_unreviewed: bool = False) -> d
     risk = str(record.get("risk", ""))
     if risk == "dangerous":
         raise SkillBlocked(f"dangerous skill blocked: {identifier}")
-    if risk in {"unknown", "review"} and not allow_unreviewed:
-        raise SkillConfirmationRequired(
-            {"error": "confirmation_required", "skill": _skill_metadata(record, core)}
-        )
     if risk not in {"safe", "unknown", "review"}:
         raise SkillBlocked(f"unsupported risk state: {risk}")
 
@@ -171,6 +167,10 @@ def read_skill(root: Path, identifier: str, allow_unreviewed: bool = False) -> d
         raise SkillBlocked(f"unsafe skill tree: {error}") from error
     if observed != record.get("content_sha256"):
         raise SkillBlocked(f"hash mismatch: {identifier}")
+    if risk in {"unknown", "review"} and not allow_unreviewed:
+        raise SkillConfirmationRequired(
+            {"error": "confirmation_required", "skill": _skill_metadata(record, core)}
+        )
 
     return {
         "skill": _skill_metadata(record, core),
