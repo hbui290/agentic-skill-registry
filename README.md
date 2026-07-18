@@ -1,28 +1,63 @@
 # Agentic Skill Registry
 
-A verified, source-aware registry for AI agent skills.
+> A verified, on-demand skill library for AI agents.
 
-This repository keeps a large legacy catalog usable without pretending that
-every entry is safe. Each skill has an identity, provenance, content hash,
-license metadata, risk state, and review history.
+This repository lets an agent find and load only the skill instructions needed
+for the current task. It is not an agent application, an MCP server, or a
+package that installs thousands of skills into Codex.
+
+```text
+User request
+→ Agent
+→ Skill Librarian searches the registry
+→ selects 1–5 relevant skills
+→ policy and integrity checks
+→ reads only the selected SKILL.md files
+→ Agent executes the task
+```
+
+Think of `catalog/` as a library and `skill-librarian` as the librarian.
+Catalog skills stay out of native Codex discovery; only the Librarian is
+installed natively.
+
+## What this repository does
+
+- Preserves skill snapshots with source, pinned commit, license, risk state,
+  content hash, and review metadata.
+- Searches skills offline without loading their instructions into context.
+- Reads a selected skill only after state, risk, path, symlink, and hash checks.
+- Lets the Librarian combine up to five skills as `single`, `sequential`, or
+  `parallel` work.
+- Imports new public GitHub sources through a review-gated
+  `prepare → review → commit` process.
+
+## What it does not do
+
+- It does not bulk-install the catalog into Codex.
+- It does not treat every active skill as safe.
+- It does not run bundled scripts, grant credentials, or widen permissions.
+- It does not use MCP, embeddings, vector databases, hosted search, or a
+  marketplace in V1.
+- It does not replace Official Superpowers. Superpowers owns process guidance;
+  the Librarian selects domain playbooks.
 
 ## Current status
 
-- 1,953 active catalog entries; 1,949 are searchable after exact Office duplicate canonicalization.
-- 2 markerless entries quarantined: `SPDD` and `linear`.
-- 1 audited Core skill: `moyu`.
-- Strict offline verification available.
-- Read-only upstream freshness checks available.
-- Offline on-demand search and policy-gated reads available.
-- One installable Librarian skill; catalog skills stay outside native discovery.
-- Automatic bulk import and automatic Core promotion are disabled.
+| Item | Status |
+| --- | --- |
+| Active catalog entries | 1,953 |
+| Searchable entries | 1,949 |
+| Quarantined entries | 2 (`SPDD`, `linear`) |
+| Audited Core skills | 1 (`moyu`) |
+| Native skill from this repo | `skill-librarian` only |
+| Secondary-source pilot | `azure-blob-storage` (still `unknown`) |
 
-Core is deliberately small. A skill enters Core only after its content,
-license, capabilities, provenance, and risk have been reviewed.
+`active` means the record is structurally valid and available to the registry.
+It does **not** mean the skill is safe to load without review.
 
 ## Quick start
 
-Requirements: Python 3.11 or newer and Git.
+Requirements: Python 3.11+ and Git.
 
 ```bash
 git clone https://github.com/hbui290/agentic-skill-registry.git \
@@ -37,15 +72,20 @@ export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-registry"
 skill-registry verify --strict
 ```
 
-A successful verification prints:
+Expected result:
 
 ```text
 result=pass failed=0
 ```
 
+Install only [`skills/skill-librarian`](skills/skill-librarian/) with OpenAI's
+`$skill-installer`. Do **not** install `catalog/` into `~/.codex/skills`.
+
 ## Use skills on demand
 
-Search does not load skill instructions into the agent context:
+### Search
+
+Search returns metadata only; it never loads `SKILL.md` instructions.
 
 ```bash
 skill-registry search \
@@ -54,8 +94,11 @@ skill-registry search \
   youtube transcript
 ```
 
-Read performs the state, risk, path, symlink, and content-hash policy checks,
-then returns only metadata and the selected `SKILL.md`:
+Search excludes inactive, dangerous, and canonical-duplicate records. Ranking
+is deterministic and based on textual relevance first; safe/Core is only a
+small bonus after a relevant match.
+
+### Read a safe skill
 
 ```bash
 skill-registry read \
@@ -63,9 +106,29 @@ skill-registry read \
   --format json moyu
 ```
 
-A skill with `unknown` or `review` risk returns exit code `3` without its
-instructions. After the user reviews the reported source and risk and gives
-explicit approval, read that one candidate again:
+Before returning instructions, the CLI verifies:
+
+```text
+record state
+→ quarantine and dangerous policy
+→ catalog path containment and SKILL.md
+→ symlink safety and tree hash
+→ risk confirmation when required
+```
+
+### Unknown or review skill
+
+An intact `unknown` or `review` skill returns exit code `3`. It returns source,
+license, risk reason, and hash metadata, but never instructions.
+
+```bash
+skill-registry read \
+  --root "$AGENTIC_SKILL_REGISTRY_ROOT" \
+  --format json youtube-transcript
+echo "$?" # 3: confirmation required
+```
+
+After a user explicitly approves that one candidate, repeat with:
 
 ```bash
 skill-registry read \
@@ -73,110 +136,92 @@ skill-registry read \
   --format json --allow-unreviewed youtube-transcript
 ```
 
-To confirm a candidate without receiving its instructions, omit the approval
-flag:
+`--allow-unreviewed` does not bypass dangerous, quarantine, inactive, path,
+symlink, or hash-failure policy. Those cases always return exit code `1`.
 
-```bash
-skill-registry read --root "$AGENTIC_SKILL_REGISTRY_ROOT" \
-  --format json youtube-transcript
-echo "$?"  # 3: confirmation required; no instructions returned
+## How the Librarian works
+
+The Librarian:
+
+1. Extracts 2–5 keywords from the task and constraints.
+2. Searches at most ten candidates, with one optional broader retry.
+3. Selects at most five relevant skills and assigns `primary`/`supporting` roles.
+4. Chooses `single`, `sequential`, or `parallel` composition.
+5. Reads each selection through the CLI policy gate.
+6. Asks before loading an `unknown` or `review` candidate.
+
+It never scans the entire catalog into context, executes bundled scripts, or
+uses secrets. If no useful candidate appears after two searches, the agent
+continues without a library skill.
+
+## Add a new source
+
+The catalog can grow from more than one source, but imports are deliberately
+review-gated:
+
+```text
+prepare-source → human review → commit-source
 ```
 
-The confirmation response includes the source ID, pinned commit, source path,
-license, registered hash, risk, and risk reasons. `--allow-unreviewed` reruns
-the read after approval; it does not bypass integrity checks. Confirmation is
-returned only after the catalog path, symlink, and content-hash checks pass.
+Only public GitHub HTTPS repositories pinned to a full commit SHA and backed by
+license evidence are supported in V1. Preparation does not mutate the
+registry. Commit verifies the manifest, a clean worktree, source pin, paths,
+and content hashes. Newly imported skills always start as `unknown` and outside
+Core.
 
-Dangerous, quarantined, inactive, escaped-path, unsafe-symlink, and hash-failed
-skills are blocked and have no override.
+See [docs/source-intake.md](docs/source-intake.md) for the full operator runbook.
 
-Install only `skills/skill-librarian` with OpenAI's `$skill-installer`. The
-Librarian searches for up to ten candidates, chooses 1–5 relevant skills, and
-loads each one through the policy gate. Do not install `catalog/` into Codex.
-Official Superpowers remains a separate, unmodified process plugin.
-
-## Check upstream freshness
-
-This command compares the pinned source commits with the current upstream
-commits:
+## Refresh pinned sources
 
 ```bash
 skill-registry refresh --format json
 ```
 
-It is read-only. It does not download, overwrite, promote, or change the
-catalog. A newer upstream commit must be reviewed and imported in a separate
-change before the source lock is updated.
+This is read-only: it reports whether pinned upstream commits are current,
+behind, retired, or unreachable. It never downloads, overwrites, imports, or
+promotes catalog content.
 
-`legacy-local` is retained only as retired provenance and is never queried.
-Active refreshable sources are checked independently. `refresh` reports every
-source and exits `1` if any active source errors; it never imports or updates
-catalog content.
+## Trust model
 
-## Import a reviewed source
+| State | Meaning |
+| --- | --- |
+| Catalog | Preserved source material; may need review |
+| Active | Available in the registry; not automatically safe |
+| Unknown/review | Requires explicit confirmation before instructions are read |
+| Quarantine | Blocked pending remediation |
+| Dangerous | Blocked absolutely |
+| Core | Explicitly audited allow-list; still must be relevant |
 
-Source intake is a review-gated `prepare` → human `review` → `commit` workflow.
-Preparation does not mutate the registry, and commit requires a clean Git
-worktree, validates the complete review, re-fetches the pinned commit, and
-leaves every imported record at `unknown` risk. Do not use credentials or
-private repositories. See [docs/source-intake.md](docs/source-intake.md) for the
-operator runbook, safety boundaries, and rollback procedure.
+Four exact Office duplicates are metadata-canonicalized (`docx`, `pdf`,
+`pptx`, `xlsx` now resolve to their `*-official` records). Original catalog
+bytes and provenance remain preserved.
+
+## Development and verification
+
+```bash
+python -m pytest -q
+skill-registry verify --strict
+git diff --check
+```
+
+CI runs the test suite on Python 3.11–3.14 and runs the strict verifier.
 
 ## Repository layout
 
 | Path | Purpose |
 | --- | --- |
-| `catalog/` | Skill content preserved in the successor repository |
-| `registry/skills.json` | Identity, provenance, hash, license, risk, and state for each skill |
-| `registry/core.json` | Explicit allow-list of audited Core skill IDs |
-| `registry/quarantine.json` | Entries blocked from normal use pending remediation |
-| `registry/upstream-review.json` | Evidence and decisions for upstream changes |
-| `pipeline/skill_registry/` | Registry models, hashing, discovery, refresh, and verification |
+| `catalog/` | Preserved skill snapshots; not native-installable |
+| `registry/skills.json` | Authoritative identity, provenance, risk, path, and hash records |
+| `registry/sources.lock.json` | Pinned source and license records |
+| `registry/core.json` | Audited Core allow-list |
+| `registry/quarantine.json` | Blocked records |
+| `librarian-index.json` | Discovery description, taxonomy, and category data |
+| `pipeline/skill_registry/` | CLI, search, policy, intake, refresh, and verifier code |
 | `skills/skill-librarian/` | The only skill intended for native installation |
-| `tests/` | Unit, contract, migration, and integration tests |
-| `legacy/` | Disabled compatibility and migration material |
+| `docs/` | Migration and source-intake runbooks |
 
-## Safety model
+## Rollback
 
-The catalog and Core are different things:
-
-- Catalog: preserved material that may still need review.
-- Active: structurally valid and available in the registry; not automatically safe.
-- Review: requires human or targeted technical review before promotion.
-- Quarantined: blocked because a required contract is missing or a risk rule fired.
-- Core: explicitly audited and allowed for trusted default use.
-
-Do not copy an entire upstream repository into this catalog. Upstream changes
-may include plugins, workflows, web applications, scripts, or dependency
-changes—not just skill instructions.
-
-## Development
-
-Run the complete test suite:
-
-```bash
-python -m pytest -q
-```
-
-Run the strict registry contract:
-
-```bash
-skill-registry verify --strict
-```
-
-The strict verifier checks registry structure, skill frontmatter, identities,
-load names, content hashes, provenance, aliases, quarantine, Core membership,
-source review records, and exceptions.
-
-## Non-goals
-
-This repository is not:
-
-- a guarantee that every catalog entry is safe;
-- an automatic installer for arbitrary third-party skills;
-- a server, hosted search service, or replacement for agent process skills;
-- a replacement for reviewing code, scripts, credentials, or external actions;
-- a license to update pinned sources without importing and verifying content.
-
-For the migration boundary and operating rules, see
-[docs/migration-from-agentic-library.md](docs/migration-from-agentic-library.md).
+Use `git revert` for a code or import change. Do not hand-edit catalog or
+registry files to simulate a rollback. Uninstalling the Librarian affects only
+this integration; Official Superpowers remains untouched.
