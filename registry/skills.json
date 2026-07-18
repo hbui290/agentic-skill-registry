@@ -1604,7 +1604,7 @@
       "state": "active"
     },
     {
-      "canonical_skill_id": null,
+      "canonical_skill_id": "asr_e6c8dc8653aa3354",
       "catalog_path": "catalog/engineering/tooling-and-monorepos/docx",
       "content_sha256": "8dafd958fe1c4004609899e14ad91f29e0405375f952bc4c3f7e619655778b30",
       "first_seen_version": "1.0.0",
@@ -2288,7 +2288,7 @@
       "state": "active"
     },
     {
-      "canonical_skill_id": null,
+      "canonical_skill_id": "asr_9de67dbe1c67925b",
       "catalog_path": "catalog/engineering/tooling-and-monorepos/pptx",
       "content_sha256": "9e4ebda2ccbf00ccf5552ea7209e8ca8ee4f621aae641b2710c6899d64e3ee16",
       "first_seen_version": "1.0.0",
@@ -19951,7 +19951,7 @@
       "state": "active"
     },
     {
-      "canonical_skill_id": null,
+      "canonical_skill_id": "asr_b543a3233817a3b4",
       "catalog_path": "catalog/engineering/tooling-and-monorepos/xlsx",
       "content_sha256": "386ee88aba2a5064e6adf08717a2b51d4e5fd5c2426b36246745b31e48dd0e28",
       "first_seen_version": "1.0.0",
@@ -22129,7 +22129,7 @@
       "state": "active"
     },
     {
-      "canonical_skill_id": null,
+      "canonical_skill_id": "asr_a3eb24a0d9be8c5e",
       "catalog_path": "catalog/engineering/tooling-and-monorepos/pdf",
       "content_sha256": "5f80b4865d0b85bc1c71cd673a68a9a651678b11de773ce871d41f6f71121169",
       "first_seen_version": "1.0.0",

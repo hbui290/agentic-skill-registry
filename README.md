@@ -8,8 +8,7 @@ license metadata, risk state, and review history.
 
 ## Current status
 
-- 1,954 legacy records preserved.
-- 1,952 active catalog entries.
+- 1,953 active catalog entries; 1,949 are searchable after exact Office duplicate canonicalization.
 - 2 markerless entries quarantined: `SPDD` and `linear`.
 - 1 audited Core skill: `moyu`.
 - Strict offline verification available.
