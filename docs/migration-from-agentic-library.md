@@ -18,11 +18,17 @@ The supported runtime now has three explicit parts:
 2. `skill-registry read` enforces policy and returns only one selected
    `SKILL.md` at a time.
 3. `skills/skill-librarian` is the only native skill installed from this repo;
-   it chooses and composes 1–5 domain playbooks for the main agent.
+   it chooses and composes 1–5 domain playbooks per phase for the main agent.
 
 Official Superpowers remains separately installed from Obra/OpenAI and is not
 forked, patched, or routed through this repository. It owns process guidance;
 the Librarian owns domain-skill selection.
+
+The maintained architecture has four separate layers: Official Superpowers for
+Process, the Librarian for Routing, the Registry CLI for Trust, and catalog plus
+discovery index for Knowledge. The repository does not adopt personas,
+slash-command workflows, or an MCP integration. See
+[architecture.md](architecture.md) for the executable boundary contract.
 
 Set the canonical clone root before using the runtime:
 

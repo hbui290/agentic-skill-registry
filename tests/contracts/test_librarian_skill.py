@@ -65,3 +65,20 @@ def test_librarian_forbids_unsafe_shortcuts(repo_root):
     ]
     for phrase in required:
         assert phrase in body
+
+
+def test_architecture_docs_keep_catalog_out_of_native_discovery(repo_root):
+    readme = (repo_root / "README.md").read_text(encoding="utf-8")
+    architecture = (repo_root / "docs/architecture.md").read_text(
+        encoding="utf-8"
+    )
+    migration = (repo_root / "docs/migration-from-agentic-library.md").read_text(
+        encoding="utf-8"
+    )
+    assert "docs/architecture.md" in readme
+    for layer in ("Process", "Routing", "Trust", "Knowledge"):
+        assert layer in architecture
+    for text in (readme, architecture, migration):
+        assert "native-install the catalog" not in text
+        assert "mcpServers" not in text
+        assert "list_skills" not in text

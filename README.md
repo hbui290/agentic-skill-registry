@@ -157,11 +157,15 @@ loads its own batch; it does not keep old `SKILL.md` files in context. The
 five-skill limit is concurrent and per phase, not a limit on the total skills a
 task may use. Official Superpowers process skills are separate from this domain
 skill quota.
+
 6. Asks before loading an `unknown` or `review` candidate.
 
 It never scans the entire catalog into context, executes bundled scripts, or
 uses secrets. If no useful candidate appears after two searches, the agent
 continues without a library skill.
+
+See [the architecture contract](docs/architecture.md) for the separate Process,
+Routing, Trust, and Knowledge layers.
 
 ## Add a new source
 
