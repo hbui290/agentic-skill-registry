@@ -1,0 +1,10 @@
+{
+  "files": [
+    {
+      "path": "skills/skill-librarian/SKILL.md",
+      "sha256": "8c98d0155e93773e951636dabed262b99d761ceb102d413a0ddc7239237d789e"
+    }
+  ],
+  "manifest_sha256": "12d24ac646a2d45fbdc5daeecd9be39b7be3403d5ccdbc7fa69c446a02647cce",
+  "schema_version": 1
+}

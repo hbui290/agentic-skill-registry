@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "integration_id": "codex-skill-librarian",
+  "version": "1.0.0",
+  "native_skill_path": "skills/skill-librarian/SKILL.md",
+  "runtime": {
+    "command": "skill-registry",
+    "root_env": "AGENTIC_SKILL_REGISTRY_ROOT",
+    "minimum_python": "3.11"
+  },
+  "process_dependency": "official-superpowers"
+}

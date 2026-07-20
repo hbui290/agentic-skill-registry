@@ -10,6 +10,10 @@ from skill_registry.identity import stable_skill_id
 def clone_repository_fixture(repo_root, tmp_path):
     shutil.copytree(repo_root / "catalog", tmp_path / "catalog")
     shutil.copytree(repo_root / "registry", tmp_path / "registry")
+    shutil.copytree(
+        repo_root / "skills/skill-librarian",
+        tmp_path / "skills/skill-librarian",
+    )
     return tmp_path
 
 
@@ -75,6 +79,29 @@ def test_complete_repository_passes(repo_root):
     assert report.result == "pass"
     assert report.failed == 0
     assert report.skipped == 0
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["missing_manifest", "lock_mismatch", "native_skill_mismatch"],
+)
+def test_verify_rejects_invalid_librarian_integration(
+    repo_root, tmp_path, mutation
+):
+    root = clone_repository_fixture(repo_root, tmp_path)
+    if mutation == "missing_manifest":
+        (root / "registry/librarian-integration.json").unlink()
+    elif mutation == "lock_mismatch":
+        lock_path = root / "registry/librarian-integration.lock.json"
+        lock = json.loads(lock_path.read_text())
+        lock["manifest_sha256"] = "0" * 64
+        write_json(lock_path, lock)
+    else:
+        (root / "skills/skill-librarian/SKILL.md").write_text(
+            "changed", encoding="utf-8"
+        )
+
+    assert "registry.librarian-integration" in check_ids(root)
 
 
 @pytest.mark.parametrize(

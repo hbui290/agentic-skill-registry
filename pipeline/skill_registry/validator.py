@@ -9,6 +9,7 @@ import yaml
 from skill_registry.collector import discover_catalog
 from skill_registry.hashing import UnsafeCatalogPath, tree_sha256
 from skill_registry.identity import stable_skill_id
+from skill_registry.integration import verify_librarian_integration
 from skill_registry.reporting import VerificationReport
 
 
@@ -252,6 +253,7 @@ def verify_repository(root: Path) -> VerificationReport:
 
 def _verify_repository(root: Path) -> VerificationReport:
     findings: list[dict[str, object]] = []
+    verify_librarian_integration(root, findings)
     registry = root / "registry"
     skills_path = registry / "skills.json"
     if not skills_path.is_file():
