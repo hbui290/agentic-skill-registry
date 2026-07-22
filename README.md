@@ -32,6 +32,9 @@ native Codex skill; do not bulk-copy `catalog/` to `~/.codex/skills`.
 Task → Librarian search → select a few skills → verify path + hash → read them
 ```
 
+- Only the compact native Librarian router is always loaded. It reads its
+  operational references only when the current phase needs search, safety,
+  composition, receipts, source intake, or evaluation guidance.
 - Search works from compact metadata, not every instruction file.
 - `read` validates state, path containment, symlinks, and the bundle hash.
 - Each record carries source, pinned commit, license, and content hash.
@@ -45,6 +48,12 @@ registry="$AGENTIC_SKILL_REGISTRY_ROOT"
 skill-registry search --root "$registry" --limit 5 --format json "security audit"
 skill-registry read --root "$registry" --format json skill-librarian
 skill-registry verify --root "$registry" --strict
+```
+
+Successful JSON search responses keep this stable shape:
+
+```json
+{"query": "security audit", "matches": []}
 ```
 
 Use the Librarian for complex, unfamiliar, specialised, or multi-part work.

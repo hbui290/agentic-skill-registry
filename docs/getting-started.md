@@ -31,6 +31,10 @@ OpenAI's `$skill-installer`. Do not install `catalog/` into
 `~/.codex/skills`; catalog skills remain repository data until the Librarian
 selects one for a task.
 
+The compact Librarian router is the only always-loaded native material. It reads
+its focused references just in time for the current phase; it does not preload
+the catalog, every reference, or prior phase instructions.
+
 ## 3. Search without loading instructions
 
 ```bash
@@ -100,6 +104,11 @@ The Librarian searches up to ten candidates and may retry once with broader
 terms. It selects up to eight domain skills concurrently for a phase, prefers
 one to five, assigns them `primary` or `supporting` roles, and chooses `single`,
 `sequential`, or `parallel` composition.
+
+It reads only the minimum router reference for that phase: control-plane and
+receipt guidance for routing, safety guidance when signals or scope matter,
+composition for multi-skill work, source intake for reviewed sources, and
+evaluation for pressure tests or release checks.
 
 A large task can have additional phases. Each new phase gets a new search and
 selection; only the prior phase's needed output is handed forward. It does not

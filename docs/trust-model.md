@@ -39,6 +39,16 @@ decision: it asks the owner only when its planned action exceeds the explicit
 task scope or a high-risk signal requires confirmation. A signal that matches
 an in-scope action is not, by itself, a Registry block.
 
+## Progressive disclosure
+
+The native Librarian is a compact, always-loaded router, not a second catalog.
+It reads focused operational references only when the current phase needs them:
+control-plane and receipt guidance for routing, trust guidance for safety and
+scope, composition for multi-skill phases, source intake for reviewed sources,
+and evaluation for release checks. This disclosure boundary reduces context; it
+does not change the Registry's integrity checks or turn static signals into
+tool-level enforcement.
+
 ## Integrity checks
 
 The CLI requires the path to stay inside `catalog/`, rejects unsafe symlinks, requires `SKILL.md`, and compares the current bundle tree hash with `registry/skills.json`.

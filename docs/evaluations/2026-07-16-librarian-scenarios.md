@@ -124,3 +124,39 @@ playbook and does not count against the domain-skill quota.
 - Outcome: do not call it a no-match or claim the registry is broken without
   the command output. Report `Librarian: unavailable (CLI exit <code>)`, set
   `Policy: unavailable`, and trace only the sanitized first stderr line.
+
+## 15. Blocked read
+
+- Scenario: search succeeds, but every selected candidate's
+  `skill-registry read --format json` exits `1` because of an integrity or
+  policy failure.
+- Outcome: discard each candidate without a bypass, report `Librarian: no
+  library skill used`, and record `Policy: blocked` with only the skill IDs and
+  exit codes. Continue without a library skill.
+
+## 16. High-risk signal boundary
+
+- Scenario: a successfully read skill has `scanned` static evidence for shell
+  or credential use, while the planned action either stays within or exceeds
+  the owner-approved task scope.
+- Outcome: the signal is evidence, not Registry approval or a tool-level block.
+  The consumer agent asks the owner only before the planned action exceeds
+  scope or the high-risk signal needs confirmation. An in-scope matching signal
+  does not itself block the read.
+
+## 17. Reference selection
+
+- Scenario: a Librarian-routed implementation phase needs search and a receipt,
+  but has no safety, source-intake, composition, or release concern.
+- Outcome: the always-loaded router reads only its control-plane and
+  decision-trace references. It reads trust, composition, source-intake, or
+  evaluation references only when that current phase needs their guidance; it
+  never preloads the catalog or all prior instructions.
+
+## 18. Multi-phase handoff
+
+- Scenario: an audit phase produces verified findings for a remediation phase,
+  followed by a documentation phase.
+- Outcome: each phase performs a new search, selection, and read decision. The
+  handoff carries only the findings, patch evidence, or release checklist needed
+  next; no earlier domain `SKILL.md` or router reference is automatically kept.
