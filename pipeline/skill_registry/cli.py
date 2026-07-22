@@ -3,7 +3,13 @@ import json
 import sys
 from pathlib import Path
 
-from skill_registry.intake import IntakeError, commit_source, prepare_source
+from skill_registry.intake import (
+    IntakeError,
+    commit_source,
+    commit_source_update,
+    prepare_source,
+    prepare_source_update,
+)
 from skill_registry.refresh import SourceRefreshError, refresh_sources
 from skill_registry.runtime import (
     RegistryRuntimeError,
@@ -50,11 +56,85 @@ def build_parser() -> argparse.ArgumentParser:
     commit.add_argument("--manifest", type=Path, required=True)
     commit.add_argument("--review", type=Path, required=True)
     commit.add_argument("--format", choices=("text", "json"), default="text")
+    prepare_update = commands.add_parser("prepare-update")
+    prepare_update.add_argument("--root", type=Path, default=Path.cwd())
+    prepare_update.add_argument("--source-id", required=True)
+    prepare_update.add_argument("--url", required=True)
+    prepare_update.add_argument("--commit", required=True)
+    prepare_update.add_argument("--skills-root", required=True)
+    prepare_update.add_argument("--license", required=True)
+    prepare_update.add_argument("--license-note", required=True)
+    prepare_update.add_argument("--staging", type=Path, required=True)
+    prepare_update.add_argument(
+        "--format", choices=("text", "json"), default="text"
+    )
+    commit_update = commands.add_parser("commit-update")
+    commit_update.add_argument("--root", type=Path, default=Path.cwd())
+    commit_update.add_argument("--manifest", type=Path, required=True)
+    commit_update.add_argument("--review", type=Path, required=True)
+    commit_update.add_argument(
+        "--format", choices=("text", "json"), default="text"
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "prepare-update":
+        spec = {
+            "source_id": args.source_id,
+            "url": args.url,
+            "commit": args.commit,
+            "skills_root": args.skills_root,
+            "license": args.license,
+            "license_note": args.license_note,
+        }
+        try:
+            manifest = prepare_source_update(
+                args.root.resolve(), spec, args.staging
+            )
+        except (IntakeError, OSError) as error:
+            print(f"error={error}", file=sys.stderr)
+            return 1
+        candidates = manifest["candidates"]
+        payload = {
+            "added": sum(
+                candidate["change"] == "added" for candidate in candidates
+            ),
+            "modified": sum(
+                candidate["change"] == "modified" for candidate in candidates
+            ),
+            "path_corrected": len(manifest["path_corrections"]),
+            "result": "prepared",
+            "review_required_count": len(candidates),
+        }
+        if args.format == "json":
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(
+                f"added={payload['added']} modified={payload['modified']} "
+                f"path_corrected={payload['path_corrected']} "
+                f"review_required={payload['review_required_count']}"
+            )
+        return 0
+    if args.command == "commit-update":
+        try:
+            payload = commit_source_update(
+                args.root.resolve(), args.manifest, args.review
+            )
+        except (IntakeError, OSError) as error:
+            print(f"error={error}", file=sys.stderr)
+            return 1
+        if args.format == "json":
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(
+                f"added={payload['added']} modified={payload['modified']} "
+                f"quarantined={payload['quarantined']} "
+                f"path_corrected={payload['path_corrected']} "
+                f"strict_verifier={payload['strict_verifier']}"
+            )
+        return 0
     if args.command == "prepare-source":
         spec = {
             "source_id": args.source_id,

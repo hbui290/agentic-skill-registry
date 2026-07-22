@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "source_id": "sickn33-agentic-awesome-skills",
+  "source_commit": "98c140e03781e20c7f769532af975a7249341f40",
+  "manifest_sha256": "276e6d1b174f61888d38f4130af68135f582131a044c49af39e1fdfd500b0171",
+  "candidate_count": 1,
+  "decisions": [
+    {
+      "source_path": "skills/antigravity-maintainer-batch-release",
+      "content_sha256": "99bebe7c013bf993b784f946025535cf4ffb3b81de600c10b5e357bda77aedaf",
+      "decision": "quarantine",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "License remains UNKNOWN and the modified skill signals shell, network, and filesystem writes; retain as non-runnable quarantine"
+    }
+  ]
+}

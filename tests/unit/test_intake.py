@@ -3,6 +3,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -1666,6 +1667,682 @@ def test_dump_json_atomic_removes_temporary_file_when_replace_fails(
     assert not attempted_temporary.exists()
     assert unrelated.read_text(encoding="utf-8") == "preserve\n"
     assert not target.exists()
+
+
+def install_existing_update_fixture(valid_root, old_bundle):
+    catalog = valid_root / "catalog/engineering/testing/existing"
+    shutil.copytree(old_bundle, catalog)
+    digest = intake.tree_sha256(catalog)
+    skill_id = stable_skill_id("existing-source", "skills/existing")
+    write_json(
+        valid_root / "registry/skills.json",
+        {
+            "schema_version": 1,
+            "skills": [
+                {
+                    "skill_id": skill_id,
+                    "name": "existing",
+                    "load_name": "existing",
+                    "catalog_path": "catalog/engineering/testing/existing",
+                    "source_id": "existing-source",
+                    "source_commit": "a" * 40,
+                    "source_path": "skills/existing",
+                    "content_sha256": digest,
+                    "license": "MIT",
+                    "risk": "unknown",
+                    "risk_reasons": ["initial-review-required"],
+                    "state": "active",
+                    "canonical_skill_id": None,
+                    "first_seen_version": "0.1.0",
+                }
+            ],
+        },
+    )
+    write_json(
+        valid_root / "librarian-index.json",
+        {
+            "schemaVersion": 1,
+            "count": 1,
+            "entries": [
+                discovery(
+                    "existing",
+                    "engineering/testing",
+                    "testing",
+                    "Use existing.",
+                )
+            ],
+        },
+    )
+    write_json(
+        valid_root / "registry/safety-signals.json",
+        {
+            "schema_version": 1,
+            "profiles": [
+                {
+                    "skill_id": skill_id,
+                    "content_sha256": digest,
+                    "scanner_version": 1,
+                    "status": "scanned",
+                    "signals": [],
+                    "severity": "clean",
+                    "evidence": [],
+                }
+            ],
+        },
+    )
+    subprocess.run(["git", "-C", str(valid_root), "add", "."], check=True)
+    subprocess.run(
+        ["git", "-C", str(valid_root), "commit", "-qm", "existing skill"],
+        check=True,
+    )
+
+
+def test_prepare_source_update_repairs_flattened_path_and_reviews_only_delta(
+    valid_root, tmp_path, monkeypatch
+):
+    old = tmp_path / "old"
+    new = tmp_path / "new"
+    old_bundle = make_skill(old / "skills/group", "existing")
+    new_bundle = make_skill(new / "skills/group", "existing")
+    (new_bundle / "notes.md").write_text("changed\n", encoding="utf-8")
+    make_skill(new / "skills", "new-skill")
+    install_existing_update_fixture(valid_root, old_bundle)
+
+    def checkout(spec, destination):
+        source = old if spec["commit"] == "a" * 40 else new
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 2, "byte_count": 200},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+    stage = tmp_path / "update-stage"
+
+    manifest = intake.prepare_source_update(
+        valid_root,
+        valid_source_spec(
+            source_id="existing-source",
+            url="https://github.com/example/existing.git",
+        ),
+        stage,
+    )
+
+    assert manifest["base_commit"] == "a" * 40
+    assert manifest["path_corrections"] == [
+        {
+            "from": "skills/existing",
+            "skill_id": stable_skill_id("existing-source", "skills/existing"),
+            "to": "skills/group/existing",
+        }
+    ]
+    assert [
+        (candidate["source_path"], candidate["change"])
+        for candidate in manifest["candidates"]
+    ] == [
+        ("skills/group/existing", "modified"),
+        ("skills/new-skill", "added"),
+    ]
+    review = json.loads((stage / "review.json").read_text())
+    assert review["decisions"][0]["taxonomy"] == "engineering/testing"
+
+
+def test_prepare_source_update_uses_per_skill_license_from_metadata_index(
+    valid_root, tmp_path, monkeypatch
+):
+    old = tmp_path / "old"
+    new = tmp_path / "new"
+    old_bundle = make_skill(old / "skills/group", "existing")
+    make_skill(new / "skills/group", "existing")
+    make_skill(new / "skills", "licensed")
+    make_skill(new / "skills", "unlicensed")
+    old_index = [
+        {"id": "existing", "path": "skills/group/existing", "license": "MIT"}
+    ]
+    new_index = [
+        *old_index,
+        {"id": "licensed", "path": "skills/licensed", "license": "Apache-2.0"},
+        {"id": "unlicensed", "path": "skills/unlicensed"},
+    ]
+    write_json(old / "skills_index.json", old_index)
+    write_json(new / "skills_index.json", new_index)
+    install_existing_update_fixture(valid_root, old_bundle)
+    lock_path = valid_root / "registry/sources.lock.json"
+    lock = json.loads(lock_path.read_text())
+    lock["sources"][0]["metadata_index"] = "skills_index.json"
+    write_json(lock_path, lock)
+    subprocess.run(["git", "-C", str(valid_root), "add", "."], check=True)
+    subprocess.run(
+        ["git", "-C", str(valid_root), "commit", "-qm", "indexed source"],
+        check=True,
+    )
+
+    def checkout(spec, destination):
+        source = old if spec["commit"] == "a" * 40 else new
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 3, "byte_count": 300},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+
+    manifest = intake.prepare_source_update(
+        valid_root,
+        valid_source_spec(
+            source_id="existing-source",
+            url="https://github.com/example/existing.git",
+            license="per-skill",
+        ),
+        tmp_path / "license-stage",
+    )
+
+    licenses = {
+        candidate["source_path"]: candidate["license"]
+        for candidate in manifest["candidates"]
+    }
+    assert licenses == {
+        "skills/group/existing": "MIT",
+        "skills/licensed": "Apache-2.0",
+        "skills/unlicensed": None,
+    }
+
+
+def test_indexed_source_bundles_include_nested_candidates_and_ignore_aliases(
+    tmp_path,
+):
+    checkout = tmp_path / "checkout"
+    make_skill(checkout / "skills", "group")
+    nested = make_skill(checkout / "skills/group", "nested")
+    (checkout / "skills/alias").symlink_to("group")
+    write_json(
+        checkout / "skills_index.json",
+        [
+            {"path": "skills/group", "name": "group"},
+            {"path": "skills/group/nested", "name": "nested"},
+        ],
+    )
+
+    bundles, metadata = intake.indexed_source_bundles(
+        checkout, "skills_index.json", "skills"
+    )
+
+    assert sorted(bundles) == ["skills/group", "skills/group/nested"]
+    assert bundles["skills/group/nested"] == nested
+    assert metadata["skills/group/nested"]["name"] == "nested"
+
+
+def test_source_object_id_handles_internal_symlink_without_following_it(tmp_path):
+    checkout = tmp_path / "checkout"
+    bundle = make_skill(checkout / "skills", "dbos")
+    (bundle / "AGENTS.md").write_text("instructions\n", encoding="utf-8")
+    (bundle / "CLAUDE.md").symlink_to("AGENTS.md")
+    subprocess.run(["git", "init", "-q", str(checkout)], check=True)
+    subprocess.run(["git", "-C", str(checkout), "add", "."], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.com",
+            "commit",
+            "-qm",
+            "fixture",
+        ],
+        check=True,
+    )
+
+    object_id = intake.source_object_id(checkout, "skills/dbos")
+
+    assert re.fullmatch(r"[0-9a-f]{40}", object_id)
+
+
+def test_inspect_update_bundle_grandfathers_only_non_growing_existing_bundle(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setattr(intake, "MAX_BUNDLE_FILES", 1)
+    old = make_skill(tmp_path / "old", "large", {"extra.md": "old\n"})
+    new = make_skill(tmp_path / "new", "large", {"extra.md": "new\n"})
+
+    assert intake.inspect_update_bundle(new, old)["file_count"] == 2
+
+    (new / "growth.md").write_text("growth\n", encoding="utf-8")
+    with pytest.raises(IntakeError, match="bundle file limit exceeded"):
+        intake.inspect_update_bundle(new, old)
+
+
+def test_classification_uses_best_match_instead_of_popular_taxonomy():
+    index = [
+        discovery(
+            f"azure-{number}",
+            "cloud-and-infrastructure/azure-cloud",
+            "azure-cloud",
+            "Python cloud resource",
+        )
+        for number in range(20)
+    ]
+    index.append(
+        discovery(
+            "pytest-regression",
+            "engineering/testing",
+            "testing",
+            "Python unit test harness and regression checks",
+        )
+    )
+
+    result = intake.propose_classification(
+        {
+            "name": "test-guard",
+            "description": "Python unit test harness for regression checks",
+        },
+        index,
+    )
+
+    assert result["taxonomy"] == "engineering/testing"
+
+
+def test_index_reconciliation_uses_stable_index_id_for_nested_path():
+    record = {
+        "skill_id": stable_skill_id("existing-source", "skills/nested"),
+        "load_name": "nested",
+        "source_path": "skills/nested",
+    }
+
+    mapped, corrections = intake.reconcile_indexed_source_paths(
+        [record],
+        {"skills/group/nested": {"id": "nested"}},
+    )
+
+    assert mapped == {"skills/group/nested": record}
+    assert corrections == [
+        {
+            "from": "skills/nested",
+            "skill_id": record["skill_id"],
+            "to": "skills/group/nested",
+        }
+    ]
+
+
+def test_index_reconciliation_prefers_exact_path_over_disambiguated_load_name():
+    record = {
+        "skill_id": stable_skill_id("existing-source", "skills/group/nested"),
+        "load_name": "nested--existing-source",
+        "source_path": "skills/group/nested",
+    }
+
+    mapped, corrections = intake.reconcile_indexed_source_paths(
+        [record],
+        {"skills/group/nested": {"id": "nested"}},
+    )
+
+    assert mapped == {"skills/group/nested": record}
+    assert corrections == []
+
+
+def test_discovery_metadata_falls_back_to_load_name_when_skill_id_is_absent():
+    record = {"skill_id": "asr_missing", "load_name": "existing"}
+    entry = discovery(
+        "existing",
+        "engineering/testing",
+        "testing",
+        "Use existing.",
+    )
+
+    assert intake.discovery_metadata_for_record(record, [entry]) == entry
+
+
+def test_commit_source_update_rekeys_paths_updates_content_and_adds_candidates(
+    valid_root, tmp_path, monkeypatch
+):
+    old = tmp_path / "old"
+    new = tmp_path / "new"
+    old_bundle = make_skill(old / "skills/group", "existing")
+    new_bundle = make_skill(new / "skills/group", "existing")
+    (new_bundle / "notes.md").write_text("changed\n", encoding="utf-8")
+    make_skill(new / "skills", "new-skill")
+    install_existing_update_fixture(valid_root, old_bundle)
+
+    def checkout(spec, destination):
+        source = old if spec["commit"] == "a" * 40 else new
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 2, "byte_count": 200},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+    stage = tmp_path / "update-stage"
+    intake.prepare_source_update(
+        valid_root,
+        valid_source_spec(
+            source_id="existing-source",
+            url="https://github.com/example/existing.git",
+        ),
+        stage,
+    )
+    review_path = stage / "review.json"
+    review = json.loads(review_path.read_text())
+    for decision in review["decisions"]:
+        decision.update(
+            {
+                "decision": "import",
+                "reason": "Reviewed update fixture",
+                "taxonomy": "engineering/testing",
+                "category_fine": "testing",
+            }
+        )
+    new_decision = next(
+        decision
+        for decision in review["decisions"]
+        if decision["source_path"] == "skills/new-skill"
+    )
+    new_decision.update(
+        {
+            "decision": "canonical",
+            "canonical_skill_id": stable_skill_id(
+                "existing-source", "skills/existing"
+            ),
+        }
+    )
+    write_json(review_path, review)
+
+    result = intake.commit_source_update(
+        valid_root, stage / "manifest.json", review_path
+    )
+
+    assert result == {
+        "added": 1,
+        "modified": 1,
+        "quarantined": 0,
+        "path_corrected": 1,
+        "result": "pass",
+        "strict_verifier": "pass",
+    }
+    lock = json.loads(
+        (valid_root / "registry/sources.lock.json").read_text()
+    )["sources"][0]
+    assert lock["commit"] == "c" * 40
+    assert lock["review"]["status"] == "reviewed"
+    records = json.loads(
+        (valid_root / "registry/skills.json").read_text()
+    )["skills"]
+    existing_record = next(item for item in records if item["load_name"] == "existing")
+    assert existing_record["source_path"] == "skills/group/existing"
+    assert existing_record["skill_id"] == stable_skill_id(
+        "existing-source", "skills/group/existing"
+    )
+    assert existing_record["source_commit"] == "c" * 40
+    assert (valid_root / existing_record["catalog_path"] / "notes.md").is_file()
+    assert {record["load_name"] for record in records} == {
+        "existing",
+        "new-skill",
+    }
+    new_record = next(item for item in records if item["load_name"] == "new-skill")
+    assert new_record["canonical_skill_id"] == existing_record["skill_id"]
+
+
+def test_commit_source_update_quarantines_unlicensed_addition_and_remains_refreshable(
+    valid_root, tmp_path, monkeypatch
+):
+    old = tmp_path / "old"
+    new = tmp_path / "new"
+    modified = tmp_path / "modified"
+    licensed = tmp_path / "licensed"
+    old_bundle = make_skill(old / "skills/group", "existing")
+    make_skill(new / "skills/group", "existing")
+    make_skill(new / "skills", "unlicensed")
+    old_index = [{"id": "existing", "path": "skills/group/existing", "license": "MIT"}]
+    new_index = [
+        *old_index,
+        {"id": "unlicensed", "path": "skills/unlicensed"},
+    ]
+    write_json(old / "skills_index.json", old_index)
+    write_json(new / "skills_index.json", new_index)
+    shutil.copytree(new, modified)
+    (modified / "skills/unlicensed/changed.md").write_text(
+        "changed without license\n", encoding="utf-8"
+    )
+    shutil.copytree(new, licensed)
+    write_json(
+        licensed / "skills_index.json",
+        [
+            *old_index,
+            {"id": "unlicensed", "path": "skills/unlicensed", "license": "MIT"},
+        ],
+    )
+    install_existing_update_fixture(valid_root, old_bundle)
+    lock_path = valid_root / "registry/sources.lock.json"
+    lock = json.loads(lock_path.read_text())
+    lock["sources"][0]["metadata_index"] = "skills_index.json"
+    write_json(lock_path, lock)
+    subprocess.run(["git", "-C", str(valid_root), "add", "."], check=True)
+    subprocess.run(
+        ["git", "-C", str(valid_root), "commit", "-qm", "indexed source"],
+        check=True,
+    )
+
+    def checkout(spec, destination):
+        source = {
+            "a" * 40: old,
+            "c" * 40: new,
+            "d" * 40: modified,
+            "e" * 40: licensed,
+        }[spec["commit"]]
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 2, "byte_count": 200},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+    spec = valid_source_spec(
+        source_id="existing-source",
+        url="https://github.com/example/existing.git",
+        license="per-skill",
+    )
+    stage = tmp_path / "quarantine-stage"
+    intake.prepare_source_update(valid_root, spec, stage)
+    review_path = stage / "review.json"
+    review = json.loads(review_path.read_text())
+    for decision in review["decisions"]:
+        decision.update(
+            {
+                "decision": "import",
+                "reason": "Reviewed indexed update",
+                "taxonomy": "engineering/testing",
+                "category_fine": "testing",
+            }
+        )
+    unlicensed_decision = next(
+        decision
+        for decision in review["decisions"]
+        if decision["source_path"] == "skills/unlicensed"
+    )
+    unlicensed_decision.update(
+        {
+            "decision": "quarantine",
+            "reason": "No per-skill license evidence at pinned commit",
+            "taxonomy": "engineering/testing",
+            "category_fine": "testing",
+        }
+    )
+    write_json(review_path, review)
+
+    active_review = copy.deepcopy(review)
+    active_decision = next(
+        decision
+        for decision in active_review["decisions"]
+        if decision["source_path"] == "skills/unlicensed"
+    )
+    active_decision["decision"] = "import"
+    write_json(review_path, active_review)
+    with pytest.raises(IntakeError, match="per-skill license evidence"):
+        intake.commit_source_update(
+            valid_root, stage / "manifest.json", review_path
+        )
+    write_json(review_path, review)
+
+    result = intake.commit_source_update(valid_root, stage / "manifest.json", review_path)
+
+    assert result["quarantined"] == 1
+    quarantine = json.loads(
+        (valid_root / "registry/quarantine.json").read_text()
+    )["records"]
+    assert quarantine[0]["source_path"] == "skills/unlicensed"
+    assert quarantine[0]["license"] == "UNKNOWN"
+    assert quarantine[0]["state"] == "quarantined"
+    subprocess.run(["git", "-C", str(valid_root), "add", "."], check=True)
+    subprocess.run(
+        ["git", "-C", str(valid_root), "commit", "-qm", "quarantine update"],
+        check=True,
+    )
+    modified_spec = {**spec, "commit": "d" * 40}
+    modified_stage = tmp_path / "modified-stage"
+    intake.prepare_source_update(valid_root, modified_spec, modified_stage)
+    modified_review_path = modified_stage / "review.json"
+    modified_review = json.loads(modified_review_path.read_text())
+    modified_review["decisions"][0].update(
+        {
+            "decision": "import",
+            "reason": "Attempt to activate changed unlicensed skill",
+            "taxonomy": "engineering/testing",
+            "category_fine": "testing",
+        }
+    )
+    write_json(modified_review_path, modified_review)
+    with pytest.raises(IntakeError, match="per-skill license evidence"):
+        intake.commit_source_update(
+            valid_root, modified_stage / "manifest.json", modified_review_path
+        )
+
+    licensed_spec = {**spec, "commit": "e" * 40}
+    next_manifest = intake.prepare_source_update(
+        valid_root, licensed_spec, tmp_path / "licensed-stage"
+    )
+    assert [
+        (candidate["source_path"], candidate["change"], candidate["license"])
+        for candidate in next_manifest["candidates"]
+    ] == [("skills/unlicensed", "modified", "MIT")]
+
+
+def test_commit_source_update_can_move_modified_skill_to_quarantine(
+    valid_root, tmp_path, monkeypatch
+):
+    old = tmp_path / "old"
+    new = tmp_path / "new"
+    old_bundle = make_skill(old / "skills", "existing")
+    new_bundle = make_skill(new / "skills", "existing")
+    (new_bundle / "network.sh").write_text("curl https://example.com\n", encoding="utf-8")
+    install_existing_update_fixture(valid_root, old_bundle)
+
+    def checkout(spec, destination):
+        source = old if spec["commit"] == "a" * 40 else new
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 2, "byte_count": 200},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+    stage = tmp_path / "modified-quarantine-stage"
+    intake.prepare_source_update(
+        valid_root,
+        valid_source_spec(
+            source_id="existing-source",
+            url="https://github.com/example/existing.git",
+        ),
+        stage,
+    )
+    review_path = stage / "review.json"
+    review = json.loads(review_path.read_text())
+    review["decisions"][0].update(
+        {
+            "decision": "quarantine",
+            "reason": "Modified bundle adds network execution",
+            "taxonomy": "engineering/testing",
+            "category_fine": "testing",
+        }
+    )
+    write_json(review_path, review)
+
+    result = intake.commit_source_update(valid_root, stage / "manifest.json", review_path)
+
+    assert result["modified"] == 1
+    assert result["quarantined"] == 1
+    assert json.loads((valid_root / "registry/skills.json").read_text())["skills"] == []
+    quarantined = json.loads(
+        (valid_root / "registry/quarantine.json").read_text()
+    )["records"][0]
+    assert quarantined["load_name"] == "existing"
+    assert quarantined["state"] == "quarantined"
+    assert json.loads(
+        (valid_root / "registry/safety-signals.json").read_text()
+    )["profiles"] == []
+
+
+def test_commit_source_update_restores_original_when_replacement_rename_fails(
+    valid_root, tmp_path, monkeypatch
+):
+    old = tmp_path / "old"
+    new = tmp_path / "new"
+    old_bundle = make_skill(old / "skills", "existing")
+    new_bundle = make_skill(new / "skills", "existing")
+    (new_bundle / "notes.md").write_text("changed\n", encoding="utf-8")
+    install_existing_update_fixture(valid_root, old_bundle)
+
+    def checkout(spec, destination):
+        source = old if spec["commit"] == "a" * 40 else new
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(
+        intake,
+        "preflight_source_tree",
+        lambda spec: {"file_count": 2, "byte_count": 200},
+    )
+    monkeypatch.setattr(intake, "checkout_pinned_source", checkout)
+    stage = tmp_path / "rollback-stage"
+    intake.prepare_source_update(
+        valid_root,
+        valid_source_spec(
+            source_id="existing-source",
+            url="https://github.com/example/existing.git",
+        ),
+        stage,
+    )
+    review_path = stage / "review.json"
+    review = json.loads(review_path.read_text())
+    review["decisions"][0].update(
+        {
+            "decision": "import",
+            "reason": "Reviewed replacement",
+            "taxonomy": "engineering/testing",
+            "category_fine": "testing",
+        }
+    )
+    write_json(review_path, review)
+    before = repository_digest(valid_root)
+    real_replace = Path.replace
+
+    def fail_new_bundle_replace(self, target):
+        if ".existing.new." in self.name and Path(target).name == "existing":
+            raise OSError("injected catalog rename failure")
+        return real_replace(self, target)
+
+    monkeypatch.setattr(Path, "replace", fail_new_bundle_replace)
+
+    with pytest.raises(OSError, match="injected catalog rename failure"):
+        intake.commit_source_update(valid_root, stage / "manifest.json", review_path)
+
+    assert repository_digest(valid_root) == before
+    assert not list((valid_root / "catalog").rglob("*.new.*"))
 
 
 def test_dump_json_atomic_uses_distinct_temporary_files_for_concurrent_writers(

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updatedAt": "2026-07-13T11:00:25Z",
-  "count": 1953,
+  "count": 1992,
   "missingFrontmatter": [
     "SPDD",
     "linear"
@@ -2555,7 +2555,8 @@
       "content_hash": "3f970d9d2b11a625c39524f9f409915031e9ed4e044500e7b534ef56cd797316",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f9854ca4fabd24bc"
     },
     {
       "name": "molykit",
@@ -2773,14 +2774,15 @@
       "flat_name": "auto-research",
       "category_fine": "automation",
       "description": "Research uncertain questions with an explicit, user-approved web search or ChatGPT consultation, then present options and wait for implementation approval.",
-      "risk": "critical",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "self",
       "license": "MIT",
       "content_hash": "d6d63910331f4d48b00e5a46313aee6d955ee69e4fc2f2175fbcb51070807094",
       "date_added": "2026-07-09",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a91024e6a6ba3537"
     },
     {
       "name": "azure-storage-queue-rust",
@@ -4940,7 +4942,8 @@
       "content_hash": "73582cc612b1962424a2d86d35b2a6fd8729fe5be3f2b8df13bca3a928178cd9",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_d2206c2b4bbe8c5b"
     },
     {
       "name": "n8n-validation-expert",
@@ -5045,7 +5048,8 @@
       "content_hash": "4f944d3c2ca8924a55c22ef340b0f171a36d7abd8ed81c7f560ede327e7bcd8b",
       "date_added": "2026-05-22",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_56767f4e88ebb04e"
     },
     {
       "name": "sendgrid-automation",
@@ -5120,7 +5124,8 @@
       "content_hash": "be38405a913da2f0c74ab9469af3cfa26c3ad056282d1725b1c051da46c46b22",
       "date_added": "2026-05-26",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_97039272132f9fb5"
     },
     {
       "name": "zapier-make-patterns",
@@ -5195,7 +5200,8 @@
       "content_hash": "10383dd6ee400af67fd7e4d96a5ba9a2a7818e007947df9fc10cac96e4b66394",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_5c8e991f88abbd6f"
     },
     {
       "name": "aws-cost-cleanup",
@@ -5255,7 +5261,8 @@
       "content_hash": "2409afe8bc9d3bf32838e0b61be82a841e408fc4da1d1f0efe246ae502724c23",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a8299ccba30fc375"
     },
     {
       "name": "aws-penetration-testing",
@@ -5285,7 +5292,8 @@
       "content_hash": "2efcb6397035bc90c185d05f8feae4879e3dd1b8c958868855274e905d78a82a",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_01d3eafb09d8fde5"
     },
     {
       "name": "aws-security-audit",
@@ -5300,7 +5308,8 @@
       "content_hash": "025b1b00da1a329620ae9a040472eebc162ef7972103451e9b123a8c5945d440",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_3b4348ebda09e610"
     },
     {
       "name": "aws-serverless",
@@ -12372,15 +12381,16 @@
       "taxonomy": "engineering/game-dev",
       "flat_name": "2d-games",
       "category_fine": "game-development",
-      "description": "2D game development principles. Sprites, tilemaps, physics, camera.",
-      "risk": "none",
+      "description": "2D game development principles. Sprites, atlases, tilemaps, physics, cameras, and genre patterns (platformer, top-down). Use for canvas/Phaser/Kaplay/Pixi 2D games or guest viewports inside hybrid web apps.",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "200f18c62b5207f01d82f019d3e8701a844be4541ac28fd6100334f48f6a5f2c",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f69056e1f4795963"
     },
     {
       "name": "3d-games",
@@ -12395,7 +12405,8 @@
       "content_hash": "263a1739ae072365d5bec17228f4d908e0cde74b8ff25b5c7a09d4258653cf74",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_cbe7ef3e09ba0400"
     },
     {
       "name": "faf-expert",
@@ -12425,7 +12436,8 @@
       "content_hash": "f02bd2f0fd909581b046847ba6a9a7d0bb266ae1a1e67067c734ababd3ba18cc",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_2ec64b7e7004885f"
     },
     {
       "name": "game-audio",
@@ -12440,7 +12452,8 @@
       "content_hash": "600263775e0a5118b130c262eaf73d46e327675b2a3972631c7afac58a220ccb",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a449179135340395"
     },
     {
       "name": "game-design",
@@ -12455,14 +12468,15 @@
       "content_hash": "473a3c7252fb652e469bbab7be92f0dec22e2ff7951c92d7603045b06a1b2e69",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_7090d8ff0efa165a"
     },
     {
       "name": "game-development",
       "taxonomy": "engineering/game-dev",
       "flat_name": "game-development",
       "category_fine": "game-development",
-      "description": "Game development orchestrator. Routes to platform-specific skills based on project needs.",
+      "description": "Game development orchestrator. Routes by platform, dimension, and engine fit (web 2D/3D, hybrid DOM+canvas, narrative tools). Use when starting or structuring a game project, choosing frameworks, or picking among Phaser, PixiJS, Kaplay, Canvas/WebGL, Three.js, Babylon.js, Godot, Unity, or Ink/Twine.",
       "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
@@ -12470,7 +12484,8 @@
       "content_hash": "7a224210b727f30515ef2608a86ec29aa40e4cbe85ddcd4365852712ca113f7b",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_bed792e58d5317a1"
     },
     {
       "name": "godot-4-migration",
@@ -12530,7 +12545,8 @@
       "content_hash": "170cfaa44f8b8dc360c4a2775d36bf7af61d39913fc6e74dc5c93d5a7ca9599b",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_232219b19f849776"
     },
     {
       "name": "multiplayer",
@@ -12545,7 +12561,8 @@
       "content_hash": "e65b855d6f461b54f7743e254f5ef5dce141ffb4c92f593be8f7c0a6aeb21f80",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_03e8f585b148d249"
     },
     {
       "name": "openclaw-github-repo-commander",
@@ -12575,7 +12592,8 @@
       "content_hash": "40a6a2004808766f68113161eb3f58646e7757d0cbd446607c98a5e9049a279a",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_ca0e37a0515a94ad"
     },
     {
       "name": "unity-ai-game-creator",
@@ -12650,14 +12668,15 @@
       "content_hash": "cc51dcfd21b0422898789d38bc744a0dd2441a5825f0d456029643f777b1532f",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f749f0201f28846f"
     },
     {
       "name": "web-games",
       "taxonomy": "engineering/game-dev",
       "flat_name": "web-games",
       "category_fine": "game-development",
-      "description": "Web browser game development principles. Framework selection, WebGPU, optimization, PWA.",
+      "description": "Web browser game development. Framework selection (Phaser, PixiJS, Kaplay, Canvas/WebGL, Three.js, Babylon.js), hybrid DOM+canvas, WebGPU, optimization, PWA, audio unlock. Use when building HTML5/WebGL/WebGPU games or choosing a browser runtime.",
       "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
@@ -12665,7 +12684,8 @@
       "content_hash": "3d8ec91bf24be2219f57d502772da75ae879dade997dadb9c44fb7abf196d65a",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_d794029698e191d1"
     },
     {
       "name": "2slides-ppt-generator",
@@ -12965,7 +12985,8 @@
       "content_hash": "3be135bd405342793c8d8a43b034bda94faacb60527b092c9d04ce29b2823e9e",
       "date_added": "2026-05-22",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_468044ee1ae2664c"
     },
     {
       "name": "sendblue-cli",
@@ -12980,7 +13001,8 @@
       "content_hash": "f072afd9e00514c761ce0d25d62326423a9048d243bbb874d1c2fc0c0173c803",
       "date_added": "2026-05-22",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_287da768879335d5"
     },
     {
       "name": "shopify-apps",
@@ -14750,7 +14772,8 @@
       "content_hash": "5efd61ff502fd3e98313817784c0efa76cb02d03e36922b1f31921cae563a5fd",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_3fcca79eaf9ddaff"
     },
     {
       "name": "bazel-build-optimization",
@@ -15005,7 +15028,8 @@
       "content_hash": "dd3d352c4f24fa13af0c54cd51133baec801841b9b95046a15a477a6cdd5f37a",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_ff8abd3953d48739"
     },
     {
       "name": "turborepo-caching",
@@ -15898,14 +15922,15 @@
       "flat_name": "go-in-depth",
       "category_fine": "development",
       "description": "Go in depth harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
-      "risk": "safe",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "self",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "d4228acb9d46cbdd135d9423e83d74c375b89d360b042d692a0c5711561eee21",
       "date_added": "2026-07-07",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_6acfceea9ec68383"
     },
     {
       "name": "goal-loop",
@@ -16228,14 +16253,15 @@
       "flat_name": "lore",
       "category_fine": "development",
       "description": "Markdown project memory for AI agents. Use for decisions, architecture, conventions, monorepo scopes, `.lore/`, or `lore` commands; not native `/init`/`/compact` or generic init/compress/audit/query.",
-      "risk": "safe",
+      "risk": "unknown",
       "source_repo": "TheaDust/lore",
       "origin": "community",
       "license": "MIT",
       "content_hash": "002fcec9374111d5e5e8f871a97a25738b9b3191f470a4d9f284eb5f7887ba53",
       "date_added": "2026-07-12",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_b7f6a832a39fbde3"
     },
     {
       "name": "markdown-rendering",
@@ -16692,7 +16718,7 @@
       "taxonomy": "engineering/uncategorized-and-misc",
       "flat_name": "repo-maintainer",
       "category_fine": "uncategorized",
-      "description": "Championship-grade repository maintenance. Audits for test artifacts, dependency issues, CI/CD health, documentation sync, and FAF alignment. Generates prioritized cleanup plans. Use when repos need deep cleaning or ongoing maintenance.",
+      "description": "Audit and repair repository hygiene across artifacts, dependencies, CI, docs, Git state, and code-quality signals. Use for repository maintenance, cleanup, health checks, or pre-release hardening.",
       "risk": "unknown",
       "source_repo": "Wolfe-Jam/faf-skills",
       "origin": "https://github.com/Wolfe-Jam/faf-skills/tree/main/skills/repo-maintainer",
@@ -16700,7 +16726,8 @@
       "content_hash": "85684629290dee1388fd39e90a4b1537c090fed8c7f895ca2d3022285571ec3d",
       "date_added": "2026-07-01",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_5be35d32eedd1315"
     },
     {
       "name": "resolving-merge-conflicts",
@@ -16933,14 +16960,15 @@
       "flat_name": "telegram-bot-messaging",
       "category_fine": "productivity",
       "description": "Send Telegram messages, files, and alerts via bot API; ask questions with inline buttons and wait for the answer. Supports multiple bots, named chat targets, and CI/cron/hook notifications.",
-      "risk": "critical",
+      "risk": "unknown",
       "source_repo": "sanjay3290/ai-skills",
       "origin": "https://github.com/sanjay3290/ai-skills/tree/main/skills/telegram",
       "license": "Apache-2.0",
       "content_hash": "3336487c28f7a76790431e9d5ad728cbb197701137fbf12336a6c3787277af4a",
       "date_added": "2026-07-09",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_0145c4c577117416"
     },
     {
       "name": "test-framework-migration-skill",
@@ -17173,14 +17201,15 @@
       "flat_name": "weaviate-cookbooks",
       "category_fine": "ai",
       "description": "Build Weaviate AI apps from official cookbook blueprints for RAG, agentic RAG, data exploration, multimodal PDF search, async clients, and frontends.",
-      "risk": "safe",
+      "risk": "unknown",
       "source_repo": "weaviate/agent-skills",
       "origin": "community",
       "license": "BSD-3-Clause",
       "content_hash": "28d1c40e354d02cdd4162746f21c843e4e08352ed565950f1140d4210f658f7b",
       "date_added": "2026-06-29",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_d7b04a0aeec4488d"
     },
     {
       "name": "webdriverio-skill",
@@ -17908,14 +17937,15 @@
       "flat_name": "tools-page-seo-optimizer",
       "category_fine": "seo",
       "description": "Framework-agnostic SEO workflow for any site with multiple tool, product, or feature pages. Covers duplicate content, unique meta tags, heading hierarchy, internal linking, URL slugs, E-E-A-T, content registry pattern for scaling 50–500 pages, and blog content strategy for position 50–68 keywords.",
-      "risk": "safe",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "233b6eeceeae7e42fe15bd92708c5709033f47db09b021ae454f3d2d54e44344",
       "date_added": "2026-06-19",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_5b97711241eabe75"
     },
     {
       "name": "instagram",
@@ -18635,7 +18665,8 @@
       "content_hash": "5b54211aaeae6807ed88581ab6aefa43fa969d632f079d6ac05625cd9b533309",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_6847391733a33109"
     },
     {
       "name": "algorithmic-art",
@@ -18665,7 +18696,8 @@
       "content_hash": "fb1524c25f60e8dbe617cfe842e9ae0c22fae065e69a5baa90bc5959fc2adb1f",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_23dd03dabf3607d8"
     },
     {
       "name": "bento-ui",
@@ -18680,7 +18712,8 @@
       "content_hash": "2dad98bb19211755b14b18115201b9cc17f1b8ceabe4b84b18ccfc859150a595",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_73e3bb5a87ff3218"
     },
     {
       "name": "brutalism",
@@ -18695,7 +18728,8 @@
       "content_hash": "4da6e8f7c1f8d09bb8e964bc2ee5b7cac364ae62270dee1b817dbead03a184ea",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_df57740b5e926105"
     },
     {
       "name": "brutalist-typography",
@@ -18710,7 +18744,8 @@
       "content_hash": "4c3ef69b13868ca2bbb67cd79ab24f34d201f279cb158bf287f9553c3f928d87",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_3b40a1fe5e4dd9a3"
     },
     {
       "name": "canvas-design",
@@ -18740,7 +18775,8 @@
       "content_hash": "c86cd9f9c2d1f2d411232420d29674f09099de2f7ffb3e6408e5ecea1b22b86d",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_301aaf4b94629b77"
     },
     {
       "name": "claymorphism",
@@ -18755,7 +18791,8 @@
       "content_hash": "6e8268da34570f5425682dfdf6e32528857d1eaea075b8a28223fac074987bea",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_9c6a2df43de71114"
     },
     {
       "name": "color-blocking",
@@ -18770,7 +18807,8 @@
       "content_hash": "9ebae1dfa3b0c6daf11964b1c9be5e3981b6e27c1b91183992b7a53712460557",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_2b0131df8e9de7e4"
     },
     {
       "name": "cyber-y2k",
@@ -18785,7 +18823,8 @@
       "content_hash": "e260c52149d338c1c79cbb73359bf4a949a4c670fd5f241f2a59e78a827884b6",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_d93729bfcbe5c9b4"
     },
     {
       "name": "cyberpunk-ui",
@@ -18800,7 +18839,8 @@
       "content_hash": "5a7cf39f6d108e4d25ecba6f3fa78d778796500b9ebd66f2c2573bfaec1bffd9",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_51fb77cbe5435557"
     },
     {
       "name": "dark-mode",
@@ -18815,7 +18855,8 @@
       "content_hash": "2ee9c13d3eaf9abe12a3160b79e5fadb748e4e36f8fdea2b9a86419048be19f7",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a7e4f4a9da383c29"
     },
     {
       "name": "data-dense-design",
@@ -18830,7 +18871,8 @@
       "content_hash": "dd0b295ead791288d3ad398de1ff528fdf25811e174ade4bc4d6daf0df039d76",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_27bddcad244f2eee"
     },
     {
       "name": "draw",
@@ -18845,7 +18887,8 @@
       "content_hash": "b886d38f112585f6fec9a03ebe5cd868b38ab3d04bcc1544a217a3b12082b328",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_c426758890894430"
     },
     {
       "name": "duotone-design",
@@ -18860,7 +18903,8 @@
       "content_hash": "b9f3d115714d1439713d672e605eb4fd1322e7c119c14bcf9ceac4d06fdaf5f7",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_63d5dfa35d6c828b"
     },
     {
       "name": "flat-design",
@@ -18875,7 +18919,8 @@
       "content_hash": "08be406769e9cbaafc86134f6d222e06b34586d46a63a3dafe26070b07a82f09",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_b3dddf7a213172f0"
     },
     {
       "name": "flat-design-2",
@@ -18890,7 +18935,8 @@
       "content_hash": "c4ba7c6c392bb7dfc8f35ab09ea5c80e6843ce6d2515d88e252aa515d13bb733",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f69cd2c87833a8b3"
     },
     {
       "name": "frutiger-aero",
@@ -18905,7 +18951,8 @@
       "content_hash": "794cc825e3f4c085d6e71e4e99daf51333250f55ecede5665e088476c5c24d3a",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f6e0a85cc4649e2c"
     },
     {
       "name": "glassmorphism",
@@ -18920,7 +18967,8 @@
       "content_hash": "345101baeca8c14e309a845e2981177a1145ec1a4da5c7595868b135f4060b6c",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f16e1f0d1d04475e"
     },
     {
       "name": "gradient-design",
@@ -18935,7 +18983,8 @@
       "content_hash": "69906d0a7e28ffa21d45aa42f0089ef54407c82145c7eb9ef80872301cafb58e",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_7c0b2ae4549996b6"
     },
     {
       "name": "high-contrast",
@@ -18950,7 +18999,8 @@
       "content_hash": "63125ce0734667841fed688015db30b54fcc39def84453b8e95522ed421525a2",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a9d95d381a317d6d"
     },
     {
       "name": "high-end-visual-design",
@@ -18980,7 +19030,8 @@
       "content_hash": "7209955f800626629f50303e94252a1173993bb88e041017e5320e0f37f74c25",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_20f24f96d67071d8"
     },
     {
       "name": "industrial-brutalist-ui",
@@ -19010,7 +19061,8 @@
       "content_hash": "afbaba07f1f1a2215b80766acf732db102eaeee62ab8be2c16216a6f5c645236",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_deda665fde2379c3"
     },
     {
       "name": "layered-design",
@@ -19025,7 +19077,8 @@
       "content_hash": "b60cde37b15b233d02cc68cb600b2a1fd515a2f17cb9c534cd1af6bd16295e5a",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a5f0ebb36823afca"
     },
     {
       "name": "material-design",
@@ -19040,7 +19093,8 @@
       "content_hash": "11fcc399b631510ae2f53403051e05681fa04053885c42e2efa8fa4e709480ff",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_1fe8ac213f419e1f"
     },
     {
       "name": "maximalism",
@@ -19055,7 +19109,8 @@
       "content_hash": "aa25d0429d8a8269230de5e46292531351ac4596fa0a88a80da94abde38379ca",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_0bcb1afa804adb68"
     },
     {
       "name": "minimalism",
@@ -19070,7 +19125,8 @@
       "content_hash": "54d7211651f2d99df0114caabbe8743bd1a909f565cfe9fb59282866ced2238e",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_188e9b6184ca4b67"
     },
     {
       "name": "minimalist-ui",
@@ -19100,7 +19156,8 @@
       "content_hash": "c2c35f4f286633c7678a2b65d8ceb05574cdbbfbdab3cf26f53db8cfd7637f55",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_e5ad962bb1be7cb0"
     },
     {
       "name": "neo-brutalism",
@@ -19115,7 +19172,8 @@
       "content_hash": "c8fa3045827eb09a935a5c637e3ada8127af8eb81512f552a5b5c67170bb66bf",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_e3954d1b0b027407"
     },
     {
       "name": "neumorphism",
@@ -19130,7 +19188,8 @@
       "content_hash": "741a8e95c446e30cf8d538d9578741df8b0172c15e414cc343c9d3af23040f3b",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_387402632bd9181c"
     },
     {
       "name": "retro-design",
@@ -19145,7 +19204,8 @@
       "content_hash": "de6d5150ec9e18080490baca2c0b52a6336612d24d3790b1488a039634ab17f4",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_78ee0fbc91e115d8"
     },
     {
       "name": "retro-futurism",
@@ -19160,7 +19220,8 @@
       "content_hash": "c0fc304c5cf6b2488eaa2d8168a0069e7ef09200eec7b04093091216c3cbd507",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_b0c9f97b1fcbd2fc"
     },
     {
       "name": "sci-fi-interface",
@@ -19175,7 +19236,8 @@
       "content_hash": "c170503a56872805e3dca50d6512746b1f20d17cc54a362b5b8bbb8a1fdb321d",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_e7cd5ce71a1d9fc7"
     },
     {
       "name": "skeuomorphism",
@@ -19190,7 +19252,8 @@
       "content_hash": "ebb1d0039fb781d79132423d6042de03e2194de8d579628ab97e50a2067f9fae",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_64bf567aa2c6b33d"
     },
     {
       "name": "soft-pastel",
@@ -19205,7 +19268,8 @@
       "content_hash": "3d5cdf43499272d20deb0f18d9bb4045ddedbdbfa5b738c719750ad8eb3c6d00",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_3e7eeb828939154a"
     },
     {
       "name": "spatial-design",
@@ -19220,7 +19284,8 @@
       "content_hash": "78106c743481e94b43ae0e202b9b851b4700a457fb9ed50e46bd0cd17a378711",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a27095973d9e78c8"
     },
     {
       "name": "swiss-design",
@@ -19235,7 +19300,8 @@
       "content_hash": "3c00fad507c84a4e5d72b6f3cd6a4368decd0852c1594d5e2e9d59826f66fb0e",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_37c87d4577bd62c5"
     },
     {
       "name": "synthwave",
@@ -19250,7 +19316,8 @@
       "content_hash": "60867c7e9e348fac012c552070910aed489e63e7217b0c2a4c7babff464f340d",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_22cf9786e0cc2f31"
     },
     {
       "name": "tile-design",
@@ -19265,7 +19332,8 @@
       "content_hash": "cd67ad550599e28834106c688b86a53f4911f3fdfb6d9eb936928135b67fa2b8",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_bd32d10c5f0210d2"
     },
     {
       "name": "typography-first",
@@ -19280,7 +19348,8 @@
       "content_hash": "a5e036e1775d0c85324dc04451a430e2b75473b266ddd48398bcaced6a63df17",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_6854a77d08033c32"
     },
     {
       "name": "vaporwave",
@@ -19295,7 +19364,8 @@
       "content_hash": "e14703f0c3e927dc29381d7c1205b7e8731e5b77d3b0c4a9aefc353559264e37",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_37729d05a79439d7"
     },
     {
       "name": "vibrant-maximalism",
@@ -19310,7 +19380,8 @@
       "content_hash": "b8811f50d7930f481466c5da39b9440f53aec49a8a0fa65ae1a0719c7bf9a2d0",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_677193d05af0d2a6"
     },
     {
       "name": "widget-based-design",
@@ -19325,7 +19396,8 @@
       "content_hash": "cd69909fe1e46e45a5d34821cc9b31a445be0ee10d5cf68b8f3f771186d1d2f7",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_c703dfa5f55cd0f4"
     },
     {
       "name": "y2k-design",
@@ -19340,7 +19412,8 @@
       "content_hash": "bb2a663d891cf4202bdaa9df26f9799194db576d12e23fd57fff6fa69eec92fa",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_35001a41a553f459"
     },
     {
       "name": "baseline-ui",
@@ -19400,7 +19473,8 @@
       "content_hash": "43bc94d947dd9c45b370b24b4af8c1dd159bae96149950e2265720a0592ac1e1",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_45b981600002b405"
     },
     {
       "name": "iconsax-library",
@@ -19970,7 +20044,8 @@
       "content_hash": "e76373d51c920d9c2dafdfcef85abfe02ee5828db79802adf8cbf9e6f81d6790",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_499863a138be135a"
     },
     {
       "name": "bilig-workpaper",
@@ -20045,7 +20120,8 @@
       "content_hash": "1e3971b856284be906fca49e4c205c72f5bf9dbc3e0839faf226f1b191937c3f",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_5ea8846a13ecaf1d"
     },
     {
       "name": "dashboard-design",
@@ -20060,7 +20136,8 @@
       "content_hash": "578ea6be2f345885aa01466b70857e54939ea75cc0af04a403186423fb9292ad",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_50559112081cd5ab"
     },
     {
       "name": "discord-bot-architect",
@@ -20180,7 +20257,8 @@
       "content_hash": "ed221efc1e44eb64644909bf34c36e0e1e49e3831f7c5ccc3a80adecaed1b362",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_f7d1e5c5be5f7787"
     },
     {
       "name": "transformers-js",
@@ -20885,7 +20963,8 @@
       "content_hash": "dc8bdf4486e3d6fce67f9b35832e6ed5ab41816705e0b6df6626ef7262531af6",
       "date_added": "2026-06-17",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_81fab0298ab08a0f"
     },
     {
       "name": "gpt-taste",
@@ -21230,7 +21309,8 @@
       "content_hash": "29c58b71c1ed59f4123b37e829e9f773d380ba6a93042d1366c0a5291a201a59",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_fd8cd710122e4b07"
     },
     {
       "name": "doc-coauthoring",
@@ -21290,7 +21370,8 @@
       "content_hash": "25200a5443714109984a9dff5ae8cd4592c4918ed52e6ed994a8cce5b6c2148e",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_74d823bad106f381"
     },
     {
       "name": "nanobanana-ppt-skills",
@@ -21350,7 +21431,8 @@
       "content_hash": "f52261e57940dd8c3c34aef2678d8fd55d0da8bc3322e668af0f5088fe9c156d",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_cac5d49e8ff1282a"
     },
     {
       "name": "xlsx-official",
@@ -24268,14 +24350,15 @@
       "flat_name": "commit",
       "category_fine": "workflow",
       "description": "ALWAYS use this skill when committing code changes — never commit directly without it. Creates commits following Sentry conventions with proper conventional commit format and issue references. Trigger on any commit, git commit, save changes, or commit message task.",
-      "risk": "critical",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "c11d55018332883300fc4f6ebb97aaffacbfabd3b6944853c25f351e28bf105d",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_8124cd740dbbdd00"
     },
     {
       "name": "create-branch",
@@ -24312,7 +24395,7 @@
       "taxonomy": "workflows-and-management/git-and-github-workflows",
       "flat_name": "create-pr",
       "category_fine": "workflow",
-      "description": "Alias for sentry-skills:pr-writer. Use when users explicitly ask for \"create-pr\" or reference the legacy skill name. Redirects to the canonical PR writing workflow.",
+      "description": "Alias for pr-writer. Use when users explicitly ask for \"create-pr\" or reference the legacy skill name. Redirects to the canonical PR writing workflow.",
       "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
@@ -24320,7 +24403,8 @@
       "content_hash": "f6a64d19c2e062fece1f97889e6ef40c3803cc143673677ced96724178019715",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_8054b6328ec70c6c"
     },
     {
       "name": "finishing-a-development-branch",
@@ -24328,14 +24412,15 @@
       "flat_name": "finishing-a-development-branch",
       "category_fine": "workflow",
       "description": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup",
-      "risk": "critical",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "ace17bf078cc609e3a76f536588688c047a43fa9dae36f08436de4b14c0f0068",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_ec2713baaf98268b"
     },
     {
       "name": "geminiignore-finops",
@@ -24373,14 +24458,15 @@
       "flat_name": "git-advanced-workflows",
       "category_fine": "workflow",
       "description": "Master advanced Git techniques to maintain clean history, collaborate effectively, and recover from any situation with confidence.",
-      "risk": "critical",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "ccf334cdfe55155bed22aa17b3a6abf44bacce955e4e04f0baeea6aea9ae78fc",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_eddc64d1cdccd8d7"
     },
     {
       "name": "git-hooks-automation",
@@ -24417,15 +24503,16 @@
       "taxonomy": "workflows-and-management/git-and-github-workflows",
       "flat_name": "git-pr-workflows-git-workflow",
       "category_fine": "workflow",
-      "description": "Orchestrate a comprehensive git workflow from code review through PR creation, leveraging specialized agents for quality assurance, testing, and deployment readiness. This workflow implements modern g",
-      "risk": "critical",
+      "description": "Orchestrate review, tests, commits, branch pushes, and pull-request creation with parallel agents. Use when completed changes must move through validation into a PR or guarded merge.",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "541043ea9a2253d2abb9d7a8100c0da4f9c6060968001b7c2d17d495b56faacc",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_da906e417f0341a3"
     },
     {
       "name": "git-pr-workflows-onboard",
@@ -24462,15 +24549,16 @@
       "taxonomy": "workflows-and-management/git-and-github-workflows",
       "flat_name": "git-pushing",
       "category_fine": "workflow",
-      "description": "Stage all changes, create a conventional commit, and push to the remote branch. Use when explicitly asks to push changes (\\\"push this\\\", \\\"commit and push\\\"), mentions saving work to remote (\\\"save to github\\\", \\\"push to remote\\\"), or completes a feature and wants to share it.",
-      "risk": "critical",
+      "description": "Safely stage, commit, and push intended git changes with conventional commit messages. Use for ordinary non-release pushes when explicitly asked to push, save work remotely, or share a completed change.",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "451150927125a4df1fa29887f85bf95f069c00298fe210d6cb078310e86a6d74",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_21aabac26f8db991"
     },
     {
       "name": "git-workflow-and-versioning",
@@ -24537,15 +24625,16 @@
       "taxonomy": "workflows-and-management/git-and-github-workflows",
       "flat_name": "github-automation",
       "category_fine": "workflow",
-      "description": "Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio). Manage code workflows, review PRs, search code, and handle deployments programmatically.",
-      "risk": "critical",
+      "description": "Operate GitHub issues, pull requests, branches, checks, workflows, and permissions through Rube MCP. Use when GitHub work must be queried or changed programmatically with repository-policy safeguards.",
+      "risk": "unknown",
       "source_repo": "sickn33",
       "origin": "community",
       "license": "Per-skill licenses tracked upstream in docs/sources/sources.md and LICENSE-CONTENT",
       "content_hash": "5ae9bfc3ee91895d74548c09d01d1539c1e14724da8553d14d00b56996c75c16",
       "date_added": "2026-02-27",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_077f089cf213afcd"
     },
     {
       "name": "github-issue-creator",
@@ -24680,7 +24769,8 @@
       "content_hash": "fe45fa5959177c665864da00af7fad5f57d12dcad766fc6dbaed50bfda3e36fc",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_1eee0468f6dcf6c8"
     },
     {
       "name": "push-skill-to-github",
@@ -25085,7 +25175,8 @@
       "content_hash": "441addba40a2da345d4ffa9a226aa7778ffdfcd52833a8d632cc6aa418167b0d",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_51e2aee59b25b0db"
     },
     {
       "name": "deterministic-design",
@@ -25385,7 +25476,8 @@
       "content_hash": "9db0a66e0e8acb2f72e0554d0005c723160c3a9c45cf0fbb4b0f572a0f6d255c",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_d743b481c8bf90de"
     },
     {
       "name": "max",
@@ -25400,7 +25492,8 @@
       "content_hash": "d69091d30fcb5d653e57adcc81e65a681c5c84f89ea947f8620a6c5de315c195",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_e160d24d299f4c1a"
     },
     {
       "name": "maxia",
@@ -25670,7 +25763,8 @@
       "content_hash": "a8fb13e202e62729f777c1bc3442d5bf1aa9d86134055166d418f59cedd34b6b",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_0710735cd7df7f85"
     },
     {
       "name": "screenstudio-alt",
@@ -25835,7 +25929,8 @@
       "content_hash": "72cdc419fe40451619bdfd1ab09a78fbb8b2d794aee222998c067049ebc79621",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_8b3944bb4ad17114"
     },
     {
       "name": "telegram-mini-app",
@@ -26000,7 +26095,8 @@
       "content_hash": "964cc021e8b541e1869edf953027d1666418038c0f8b3f63255ae0bd52ae433e",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_4c4d6e0a80379946"
     },
     {
       "name": "bash-scripting",
@@ -26030,7 +26126,8 @@
       "content_hash": "247e759b6cd682655fce746c1b1cb62ed76c8dd570c9ad77271e83f8bae7d1bd",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_414b0a24fa9961f8"
     },
     {
       "name": "cpp",
@@ -26045,7 +26142,8 @@
       "content_hash": "dcf44624bae8ce931331cde9b97ffe7f90d4550348b7ee6fc7cd4eaa57f6eb13",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_effd0acde5b55d88"
     },
     {
       "name": "csharp",
@@ -26060,7 +26158,8 @@
       "content_hash": "ff8883e88c162e505a71da69017265bf99ab7ee5afe1ce594163ac16fc3d9ea7",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_17c7ae9383108a53"
     },
     {
       "name": "dart",
@@ -26075,7 +26174,8 @@
       "content_hash": "8ff2ecdff1fce072a42d0a0cc5e6b864d5a5346b1955c0c519ebb072eef8380d",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_76fd12823e0a866f"
     },
     {
       "name": "elixir",
@@ -26090,7 +26190,8 @@
       "content_hash": "2e9aa1de71dcc7159d18de6be3acb0bc9703101cf3b5dbadc71ea4231f63f63c",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_1e06fcbc8cd1485c"
     },
     {
       "name": "go",
@@ -26105,7 +26206,8 @@
       "content_hash": "1f0b139a659c8f846db3b1fcf951307fea41d258341e37726d08d1f33b94faf4",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_42ae327edb9a0206"
     },
     {
       "name": "java",
@@ -26120,7 +26222,8 @@
       "content_hash": "eab3e5e6c0168f5e07b83a441f69d0c30a2e8397400329330e2cd5692d82f7d4",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_8ad1eb43977ba09c"
     },
     {
       "name": "kotlin",
@@ -26135,7 +26238,8 @@
       "content_hash": "36a9d384711acd99e52b04fa2ee442c8f2da23e9f22d4116a777afba1aa4a1e4",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_21a5b63bcf555a2f"
     },
     {
       "name": "os-scripting",
@@ -26165,7 +26269,8 @@
       "content_hash": "7b441eb557c7f6e2f5837e4154630ff3b36d0265c55c52e848349daae919443f",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_b30d4b220ecb704c"
     },
     {
       "name": "posix-shell-pro",
@@ -26210,7 +26315,8 @@
       "content_hash": "0687dc619d114b73a2f58066b444bf40198b508f224e03147a6d03fb6bffe4fa",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_49d49770860b7fa4"
     },
     {
       "name": "rex",
@@ -26225,7 +26331,8 @@
       "content_hash": "028819cbdcc37be0b08c9a03f6fe1c74164594750ac4d2ab24516759b282621b",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_1c975d99f24f7d68"
     },
     {
       "name": "ruby",
@@ -26240,7 +26347,8 @@
       "content_hash": "cef66a150cd2625af25022722581be2f553da333feac562e43e8898656d79ae5",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_48b7ef8aebffcc8f"
     },
     {
       "name": "rust",
@@ -26255,7 +26363,8 @@
       "content_hash": "808fa309dc09fe0537dfcc541a419f39b1b35d99cb40b336853b6fdf9651e658",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_1522095d67058cd5"
     },
     {
       "name": "scala",
@@ -26270,7 +26379,8 @@
       "content_hash": "7375cbb7d8532af3ddfd45764d7605ba3f31f4c8226987b055d1680877a68839",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_c01c6a7b8f754f54"
     },
     {
       "name": "shader-programming-glsl",
@@ -26315,7 +26425,8 @@
       "content_hash": "39cd00083d132d7ea216d0e85cca139f049ab2a199f88446a04721357441fd8d",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_a3efdcd01fe1fc98"
     },
     {
       "name": "swift-concurrency-expert",
@@ -26345,7 +26456,8 @@
       "content_hash": "4eb079cfb567514b5b5fff1a2c3eb8b19ae5f027fbfac85a855249e4ba36f0a7",
       "date_added": "2026-06-16",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_880e3847f96157b7"
     },
     {
       "name": "windows-shell-reliability",
@@ -28190,7 +28302,8 @@
       "content_hash": "5c57d4aa95cc123e3061fbc5e6592c60b373d4d19ed81c0c8d4e4bbf98317c1c",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_c913c16835a85beb"
     },
     {
       "name": "projection-patterns",
@@ -28385,7 +28498,8 @@
       "content_hash": "5a19031d91452e1a3b01818b576005caef5c2c656ad68abf97ce1f49b30f2293",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_632109c94c22959b"
     },
     {
       "name": "api-security-testing",
@@ -28415,7 +28529,8 @@
       "content_hash": "c6d66f1113254c03f19b893334747b3fd0d0785da78a5011c36f8bf2f54f0843",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_3f29061cf6ee8af8"
     },
     {
       "name": "bugs-are-annoying",
@@ -28505,7 +28620,8 @@
       "content_hash": "9842d53bccf12757c1a9d0985db512f5f452bdef8620f54d19e19bef9b22f972",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_4385fcb47c1c2d42"
     },
     {
       "name": "mailtrap-testing-with-sandbox",
@@ -28595,7 +28711,8 @@
       "content_hash": "1b362006ec5c63c31d46ef7aa49ddcf21c4eb5c4e63013efb30d58228113968f",
       "date_added": "2026-06-11",
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_d1706a4d6f5aec3f"
     },
     {
       "name": "security-audit",
@@ -28625,7 +28742,8 @@
       "content_hash": "dc139ba7c47a09ed065a1df45b69bbbabb2bce3fc81f9501a6a31fa51031633e",
       "date_added": null,
       "similar_to": [],
-      "canonical": null
+      "canonical": null,
+      "skill_id": "asr_035fcf83f0a0db5d"
     },
     {
       "name": "speckit-updater",
@@ -29297,6 +29415,435 @@
       "risk": "unknown",
       "skill_id": "asr_f6570c58dea83d06",
       "taxonomy": "devops-and-security/azure-cloud"
+    },
+    {
+      "skill_id": "asr_1746c1c46b6b6788",
+      "name": "ad-campaign-analyzer",
+      "flat_name": "ad-campaign-analyzer",
+      "taxonomy": "marketing-and-seo/marketing-strategy-and-copy",
+      "category_fine": "marketing",
+      "description": "Analyze cross-channel campaign data, quantify uncertainty, and propose evidence-labeled budget tests without overstating causality.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_06cd14d78b3e3974",
+      "name": "antigravity-maintainer-batch-release",
+      "flat_name": "antigravity-maintainer-batch-release",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "description": "Run protected AAS maintainer sweeps, PR merge batches, canonical sync, Core preview checks, and scripted releases. Use for repository maintenance, main alignment, CLI/MCP/Workbench changes, or release work; not ordinary contribution tasks.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_ba25d363451b855c",
+      "name": "anywrite",
+      "flat_name": "anywrite",
+      "taxonomy": "productivity-and-content/productivity-utilities-and-engines",
+      "category_fine": "productivity",
+      "description": "Compiled CLI covering all 52 endpoints of the Anytype local API — objects, properties, tags, search, chat, files — one binary, no MCP server needed.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_c345d3faa7e76561",
+      "name": "clean-code-guard",
+      "flat_name": "clean-code-guard",
+      "taxonomy": "engineering/code-quality-and-refactoring",
+      "category_fine": "code-quality",
+      "description": "Review generated or changed production code with Clean Code, SOLID, DRY, KISS, YAGNI, and LLM-specific failure-mode checks.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_96da1a995255b054",
+      "name": "cloudflare-security-audit",
+      "flat_name": "cloudflare-security-audit",
+      "taxonomy": "devops-and-security/cybersecurity-and-pentesting",
+      "category_fine": "security",
+      "description": "Audit authorized codebases for exploitable vulnerabilities using scoped reconnaissance, adversarial review, validation, and structured reporting.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_90de614e020c0cd8",
+      "name": "competitor-ad-intelligence",
+      "flat_name": "competitor-ad-intelligence",
+      "taxonomy": "marketing-and-seo/marketing-strategy-and-copy",
+      "category_fine": "marketing",
+      "description": "Research public competitor ads, analyze creative patterns and landing pages, and produce an evidence-labeled strategic teardown.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_82d9feacaf381087",
+      "name": "diagnose-android-overheating",
+      "flat_name": "diagnose-android-overheating",
+      "taxonomy": "engineering/debugging-and-error-handling",
+      "category_fine": "development-and-testing",
+      "description": "Use when diagnosing Android overheating, idle heat, thermal throttling, charging or radio heat, or abnormal battery drain with read-only ADB evidence and approval gates.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_b671cbef1c676f38",
+      "name": "ditto",
+      "flat_name": "ditto",
+      "taxonomy": "workflows-and-management/agent-and-ai-development",
+      "category_fine": "workflow",
+      "description": "Use when a user asks to mine or update a private, evidence-backed work profile from local Claude Code, Codex, Copilot CLI, or OpenCode sessions.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_bd4859581c4f1006",
+      "name": "docs-guard",
+      "flat_name": "docs-guard",
+      "taxonomy": "engineering/code-quality-and-refactoring",
+      "category_fine": "code-quality",
+      "description": "Review generated or changed documentation before it ships, including READMEs, API references, docstrings, changelogs, tutorials, and documentation sites.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_1bf43d98a50b69b1",
+      "name": "feature-tracking",
+      "flat_name": "feature-tracking",
+      "taxonomy": "workflows-and-management/collaboration-and-project-management",
+      "category_fine": "project-management",
+      "description": "Maintain durable feature-level memory across AI coding sessions with lightweight Markdown tracks for status, source-of-truth docs, decisions, risks, and changes.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_9166a3a038869813",
+      "name": "engine-selection",
+      "flat_name": "engine-selection",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "description": "Selects game engines and frameworks by platform, genre, and architecture (full canvas shell vs hybrid DOM shell + guest viewport). Covers Phaser, PixiJS, Kaplay, Canvas/WebGL, Three.js, Babylon.js, Godot, Unity, Ink, Twine. Use when choosing a stack or comparing runtimes before implementation.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_dfad597095a61d0e",
+      "name": "hf-cloud-aws-context-discovery",
+      "flat_name": "hf-cloud-aws-context-discovery",
+      "taxonomy": "devops-and-security/aws-cloud",
+      "category_fine": "cloud",
+      "description": "Discover the effective local AWS profile, region, account, and caller identity before any AWS task without exposing credentials.",
+      "risk": "unknown",
+      "license": "Apache-2.0",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_6e257f24baf8d16b",
+      "name": "markstream-angular",
+      "flat_name": "markstream-angular",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate the alpha markstream-angular renderer into Angular 20+ applications with standalone components, signals, safe HTML defaults, and optional peer features.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_c8f828fdf7c16d9f",
+      "name": "markstream-custom-components",
+      "flat_name": "markstream-custom-components",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Override Markstream node renderers and add trusted custom tags across Vue, React, Svelte, and Angular using scoped or renderer-local mappings.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_1eef6d419c2deb7c",
+      "name": "markstream-install",
+      "flat_name": "markstream-install",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Install and configure Markstream streaming Markdown renderers for Vue, React, Svelte, Angular, Nuxt, Next.js, and Vue 2 applications.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_54ba32220119d240",
+      "name": "markstream-migration",
+      "flat_name": "markstream-migration",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Audit and migrate an existing Markdown renderer to Markstream while preserving custom renderers, security policy, streaming behavior, and explicit parity gaps.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_8520723467e19cff",
+      "name": "markstream-nuxt",
+      "flat_name": "markstream-nuxt",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate markstream-vue into Nuxt 3 or 4 with SSR-safe client boundaries, renderer modes, explicit CSS, and browser-only optional peers.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_773c7a9d9f4c9f72",
+      "name": "markstream-react",
+      "flat_name": "markstream-react",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate the beta markstream-react renderer into React 18+ or Next.js with correct client/server entrypoints, CSS, streaming state, and component overrides.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_956ef629d942edee",
+      "name": "markstream-svelte",
+      "flat_name": "markstream-svelte",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate the beta markstream-svelte renderer into Svelte 5 or SvelteKit with runes, explicit CSS, smooth streaming, workers, and SSR-safe boundaries.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_e4ca7d8d40d66054",
+      "name": "markstream-vue",
+      "flat_name": "markstream-vue",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate markstream-vue into plain Vue 3 with renderer modes, code and DOM choices, streaming state, virtualization, optional peers, and scoped components.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_481298ff45fc9de4",
+      "name": "markstream-vue2",
+      "flat_name": "markstream-vue2",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate markstream-vue2 into Vue 2.6 or 2.7 with correct Composition API decisions, CSS, streaming state, optional peers, and scoped overrides.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_dd778cbfca01d17c",
+      "name": "markstream-vue2-cli",
+      "flat_name": "markstream-vue2-cli",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate markstream-vue2 into Vue CLI or Webpack 4 with export-map-safe CSS, CDN worker fallbacks, and conservative code-block defaults.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_8d02485360b43924",
+      "name": "markstream-vue2-vite",
+      "flat_name": "markstream-vue2-vite",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "description": "Integrate markstream-vue2 into Vue 2 plus Vite with bundled worker imports, CSS ordering, Composition API compatibility, and safe streaming defaults.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_d2be54ea2fb5cd45",
+      "name": "modellix",
+      "flat_name": "modellix",
+      "taxonomy": "productivity-and-content/media-and-video-creation",
+      "category_fine": "creative",
+      "description": "Integrate Modellix unified API/CLI for async AI image and video generation (model run --wait, task download).",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_29b9c04f3e6b0ca7",
+      "name": "n8n-agents",
+      "flat_name": "n8n-agents",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Design n8n AI agents, chains, classifiers, extractors, tool calling, memory, RAG, structured output, and human-review flows.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_cb21c41063033754",
+      "name": "n8n-binary-and-data",
+      "flat_name": "n8n-binary-and-data",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Handle n8n files and binary data across uploads, downloads, transforms, multimodal inputs, agent tools, and chat surfaces.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_4139c72c825559b2",
+      "name": "n8n-code-tool",
+      "flat_name": "n8n-code-tool",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Write and debug JavaScript or Python for the AI-callable n8n Custom Code Tool, including schemas, sandbox limits, and return formats.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_9157181298db125c",
+      "name": "n8n-error-handling",
+      "flat_name": "n8n-error-handling",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Design visible, structured, recoverable n8n failures using error outputs, retries, Error Trigger workflows, and HTTP error responses.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_06f5c0217b8f8350",
+      "name": "n8n-multi-instance",
+      "flat_name": "n8n-multi-instance",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Select, verify, and safely switch n8n MCP instances across production, staging, teams, or clients, especially before credential writes.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_79c810cd6d034c4b",
+      "name": "n8n-subworkflows",
+      "flat_name": "n8n-subworkflows",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Build reusable n8n sub-workflows with typed inputs, all-vs-each execution, discoverable naming, and agent-tool exposure.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_ee01901cd8a241bb",
+      "name": "ontoly-software-graph",
+      "flat_name": "ontoly-software-graph",
+      "taxonomy": "engineering/code-quality-and-refactoring",
+      "category_fine": "development",
+      "description": "Use Ontoly's deterministic Software Graph, MCP server, and agent skills for architecture review, request tracing, impact analysis, and dependency analysis.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_099349737d10a4b4",
+      "name": "optim-agent",
+      "flat_name": "optim-agent",
+      "taxonomy": "ai-and-data/data-engineering",
+      "category_fine": "data",
+      "description": "Guide agent-driven parameter optimization for configurable systems with measurable objectives. Use for HPO, inference tuning, simulations, or RL/control experiments.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_36c432f985fb813d",
+      "name": "pptx-deck-creation",
+      "flat_name": "pptx-deck-creation",
+      "taxonomy": "productivity-and-content/cloud-and-office-automation",
+      "category_fine": "presentation-processing",
+      "description": "Create editable, production-ready PPTX decks with narrative planning, explicit layout specs, asset guidance, and quality checks.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_34323977feb03b3d",
+      "name": "sshepherd",
+      "flat_name": "sshepherd",
+      "taxonomy": "devops-and-security/ci-cd-and-pipelines",
+      "category_fine": "devops",
+      "description": "Zero-knowledge SSH ops CLI — server health checks, docker/systemd control, log tailing, Postgres introspection, and declarative deploys, without ever exposing credentials to the agent.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_cd60ebc02823441d",
+      "name": "test-guard",
+      "flat_name": "test-guard",
+      "taxonomy": "devops-and-security/testing-and-validation",
+      "category_fine": "testing",
+      "description": "Review generated or changed test code against universal testing rules before it ships or is presented for approval.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_af02b8523247043e",
+      "name": "using-n8n-mcp-skills",
+      "flat_name": "using-n8n-mcp-skills",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "description": "Route n8n MCP workflow design, editing, validation, testing, deployment, credential, execution, and debugging tasks to specialist guidance.",
+      "risk": "unknown",
+      "license": "MIT",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_36e76c3a4e538518",
+      "name": "warehouse",
+      "flat_name": "warehouse",
+      "taxonomy": "ai-and-data/data-engineering",
+      "category_fine": "data",
+      "description": "Plan and review read-only data warehouse analysis with explicit scope, privacy, provenance, and validation checks.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_4865154aedbedf3e",
+      "name": "woo-guard",
+      "flat_name": "woo-guard",
+      "taxonomy": "workflows-and-management/wordpress-development",
+      "category_fine": "workflow-bundle",
+      "description": "Review generated or changed WooCommerce extensions, payment and shipping integrations, checkout customizations, and order or product logic.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
+    },
+    {
+      "skill_id": "asr_552e0e6eb07dd105",
+      "name": "wp-guard",
+      "flat_name": "wp-guard",
+      "taxonomy": "workflows-and-management/wordpress-development",
+      "category_fine": "workflow-bundle",
+      "description": "Review generated or changed WordPress plugins, themes, and blocks for security, internationalization, performance, and API correctness.",
+      "risk": "unknown",
+      "license": "UNKNOWN",
+      "canonical": null
     }
   ]
 }

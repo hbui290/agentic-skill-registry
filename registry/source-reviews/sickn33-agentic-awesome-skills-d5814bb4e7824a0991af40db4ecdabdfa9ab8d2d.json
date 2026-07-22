@@ -1,0 +1,1422 @@
+{
+  "schema_version": 1,
+  "source_id": "sickn33-agentic-awesome-skills",
+  "source_commit": "d5814bb4e7824a0991af40db4ecdabdfa9ab8d2d",
+  "manifest_sha256": "52c120f1e8e071e4f4373e20ba5e6ec594a4ec2ed0a382013849c431c3ec7641",
+  "candidate_count": 157,
+  "decisions": [
+    {
+      "source_path": "skills/ad-campaign-analyzer",
+      "content_sha256": "189c5a46e9caec97e6c4ac730a04ee97cdd56d2bb8a42b42494d8afae2fc6eeb",
+      "decision": "import",
+      "taxonomy": "marketing-and-seo/marketing-strategy-and-copy",
+      "category_fine": "marketing",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category marketing; upstream risk critical; static signals filesystem_write. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/agent-squad/alex",
+      "content_sha256": "1e3f44c44a9b225d3b7033cca27a735cf5c340de75564523a30669b2cfa8013e",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/testing-and-quality-assurance",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/aria",
+      "content_sha256": "9e3ad49b70a7da4214128d1c87822b79286f7fb16a080e953a6f536b54fd1824",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/testing-and-quality-assurance",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/dep",
+      "content_sha256": "9dced80f69c94c1176fb046721880be21b8f9155a7e03004d5c8c4e7e7257c6a",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/planning-and-execution",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/luna",
+      "content_sha256": "7924d8334f1ed3f0e8acf711bf6bfd3d0ef64f72748760ae76f5a1140ada2d47",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/testing-and-quality-assurance",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/mason",
+      "content_sha256": "5a382adf56c9617afc9691932ede19dff62e70526a7a09dfad482931865e9929",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/planning-and-execution",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/max",
+      "content_sha256": "f978d112a3a76101d1384c000841b40411717db084831f4007896c8fc3d441bb",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/planning-and-execution",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/quinn",
+      "content_sha256": "4e56aeec057d046af61836bedac7b68d6b6b6c9b812dd7e77a924a002853a892",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/testing-and-quality-assurance",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/agent-squad/rex",
+      "content_sha256": "c7f8b6bb4e5d35289c4bd9470853df9ff04d4bf49449a1b4f203eb20dce1cdc7",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "agent-squad",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/antigravity-maintainer-batch-release",
+      "content_sha256": "730e426cea484d0c483771189a0d4a8194035991129e9937b5713d7ecfe365d8",
+      "decision": "quarantine",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/anywrite",
+      "content_sha256": "0c936daa26677ebbed264ad70c7bfa5b5aaddc61413e4770825cb2db2ba310d1",
+      "decision": "import",
+      "taxonomy": "productivity-and-content/productivity-utilities-and-engines",
+      "category_fine": "productivity",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category productivity; upstream risk critical; static signals filesystem_write,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/app-builder/templates",
+      "content_sha256": "a6cc2b49c8900d4baa7b07b08daf70ce5d744583e9315c2f32749547a0cd5815",
+      "decision": "import",
+      "taxonomy": "engineering/tooling-and-monorepos",
+      "category_fine": "app-builder",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/auto-research",
+      "content_sha256": "e642c584c35903c7e16c0b4d5d128adec3fc22bdfecc183abe6179af1a9db541",
+      "decision": "import",
+      "taxonomy": "ai-and-data/rag-and-search",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/clean-code-guard",
+      "content_sha256": "63a3b3c45b0117b6d2458f5f3ca2ad7ca5bd472aa1f44d054fb08b19a705edde",
+      "decision": "quarantine",
+      "taxonomy": "engineering/code-quality-and-refactoring",
+      "category_fine": "code-quality",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/cloudflare-security-audit",
+      "content_sha256": "838097d09e6e7bfd9898f6c1e29a9e1844f3ca9b406b2e3abb0b65a64c853322",
+      "decision": "quarantine",
+      "taxonomy": "devops-and-security/cybersecurity-and-pentesting",
+      "category_fine": "security",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/commit",
+      "content_sha256": "9f05b65033134e03bd660ae6c18f41512a31fe21b66c105950c3005756f1a50c",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/competitor-ad-intelligence",
+      "content_sha256": "f72b886816f504deb484f194dc30487b4f34a8168650a766daf61a77af8e3de8",
+      "decision": "import",
+      "taxonomy": "marketing-and-seo/marketing-strategy-and-copy",
+      "category_fine": "marketing",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category marketing; upstream risk critical; static signals network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/create-pr",
+      "content_sha256": "f29505608125e94fe90f1354896d80294e1de508cb3cf8e6d470c5943b6073e4",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/design-it/3d-ui",
+      "content_sha256": "8acb2244cad20d7c32860de119fe407d70e51c45acc45a03791a73b91cf056c1",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/ai-native-ui",
+      "content_sha256": "511a1fe688b5df7fc9ee4b3510f7be46e81236629a6d2fea6711fc0475d2999f",
+      "decision": "import",
+      "taxonomy": "product-and-design/product-ui-and-app-building",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/aurora-ui",
+      "content_sha256": "0cccacef5b9c1454df404d5be0607aba506d166386fd0c0b2e15e3b508b32ba5",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/bento-ui",
+      "content_sha256": "f526bfe35b6e8a3c0a4a55a835cb63fab219e42e7bcd8c4830f503a326700a92",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/brutalism",
+      "content_sha256": "19365a28cb0bec1826be9eb66b368b8b51256a37f621bf06d945f60145de1172",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/brutalist-typography",
+      "content_sha256": "7c7fa9000d43fd4af37aeba50aea86f9003761949b2995fab0b5224b8fc967b2",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/card-based-design",
+      "content_sha256": "ee505d171e0a10aadf661f9340fda64e719656bdbbd6bf7720db0849f36216e8",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/claymorphism",
+      "content_sha256": "f39bbaff9c78672b7cfd97061bbe53786fe6115f1bc0f360c77bf91565397a04",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/color-blocking",
+      "content_sha256": "da89b2ff4e4efe626a32f95da1c2d233c67e84385a78972efaa1fa243a616885",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/command-center-ui",
+      "content_sha256": "8ed3fbab72118731b9a58c9873fb2de7d11fa0ecda0001f2bbf8dcbd1a8d7f11",
+      "decision": "import",
+      "taxonomy": "product-and-design/product-ui-and-app-building",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/cyber-y2k",
+      "content_sha256": "a6fac742d6662e5c63d77e487402e571d404c5e9189933f026bbc509ac00990b",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/cyberpunk-ui",
+      "content_sha256": "eacc16b3afbb8d2fe5474075c1004993c2a41a302a0e6fcdd85d0e218d1fd9b0",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/dark-mode",
+      "content_sha256": "7b067473bcb7e56c8f3b3ca9e8bfbdec301733e1cb6d06e3b3b372e715e11fe0",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/dashboard-design",
+      "content_sha256": "f50888e9bb9a2a851807283eb789d642536b14446cc12c8c4e12bea938716969",
+      "decision": "import",
+      "taxonomy": "product-and-design/product-ui-and-app-building",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/data-dense-design",
+      "content_sha256": "3f0f64f8725e5d26b29afd06bc2264c8db9090ca49a6146351c46b9a621ed9f2",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/duotone-design",
+      "content_sha256": "4c1f93a893d447c3cacd96912e75fced5f05d6115948ac98630326fc27bd157f",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/editorial-design",
+      "content_sha256": "0f118ae18ec545239293df01a36475d884aedc35fbc25f0307cbe539be00c38e",
+      "decision": "import",
+      "taxonomy": "product-and-design/ux-principles-and-design-taste",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/flat-design",
+      "content_sha256": "6823421255e3e570f0544fa6103ebd3a442e20b025fecc238d98e7f3ee640aaa",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/flat-design-2",
+      "content_sha256": "f49297350c4deea5e136c51417d0fac570936df562b27fa5a9558dd0dfa51583",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/floating-ui",
+      "content_sha256": "9fa84047aeee778e8a7b17acc47609afda807f92c64b74c55e6ec099e08a14dc",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-systems-and-components",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/frutiger-aero",
+      "content_sha256": "adbffc1ff7565eb42077bea095c813928664495ad0501b941fbafe4d6443322a",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/glassmorphism",
+      "content_sha256": "e3c9775d0f2cdef83193ed85939662cc578b0f38d4d58b8387e7307742a84eab",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/gradient-design",
+      "content_sha256": "4d59310f03dd3a1153042c0a3f66ad39e79f31d5131cfee20c0382f84276ce5a",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/high-contrast",
+      "content_sha256": "3a9a81a909b1d47b5b7de608d6dc5b2897cbaeda51bb2399a1ec8bf717b98665",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/holographic-ui",
+      "content_sha256": "2505a2708e501727d72d58264f6ccfbaaae81f92698d9698228d62f79d993656",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/isometric-design",
+      "content_sha256": "3ff36980f7e813387c14841da696b37a76dc896c33b13e3ac9af05aacc407866",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/layered-design",
+      "content_sha256": "c071e3e8963b10daf00b5781f520bd8383b4b41bb806cb8220d52a420564d931",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/material-design",
+      "content_sha256": "e61eb2c5e83644b4a22aca976ed16d7ce811d51bab02be53282d8cecd5b3698e",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/maximalism",
+      "content_sha256": "748ff42f128ecd46ac9e6ece5490f8d2c793a1a87a58436d02049b993d808e63",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/minimalism",
+      "content_sha256": "c2250875c0b98c77cd4e6648d9fba393ab92939796086fd219fc15a349c51ec1",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/monochromatic-ui",
+      "content_sha256": "b6b3379d0279c33bbb4e6c8b237a505154b051335706e63dca6734bc1aea6276",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/neo-brutalism",
+      "content_sha256": "aafaeaa14caca0445631445ddbcfb4e30e5301805443f90dbd9f6a4c2bbb1d89",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/neumorphism",
+      "content_sha256": "5ef8f2456a9f2c8395fd12d0e641b951c101222c8d1365c36812cd112531595b",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/retro-design",
+      "content_sha256": "546cade6a6cd8b373eafda270abe458a2506cd498ee33bce4a5cf903265af18d",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/retro-futurism",
+      "content_sha256": "c5efc3ff55398fc39157ff47969ddb169f02b06df0d16ec37832232a2d4ca798",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/sci-fi-interface",
+      "content_sha256": "8fed8aad14c8bf25d1dcc5b5018f2a10cdb7eaff1b4ea5fb0eda66f272341d37",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/skeuomorphism",
+      "content_sha256": "c3c0b0c5b4eadc1304ad57fe5783afa45e1a6ec25445240fc46500d73489499a",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/soft-pastel",
+      "content_sha256": "085a8044f2b4983c078904c0587641b8f60971177794d0e1261025b1408f6f86",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/spatial-computing-ui",
+      "content_sha256": "b804b40b87a485b1352e331ed72104cf4f56fe5e12ad0ae16966c299c1a24c97",
+      "decision": "import",
+      "taxonomy": "product-and-design/product-ui-and-app-building",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/spatial-design",
+      "content_sha256": "edc05059605b22bd9aa940e09adde4c3d12688513630d153f3be1a179bc21cc8",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/swiss-design",
+      "content_sha256": "8f19f32152efbefae830e25d9aff38df134637b784f3459e699faffd36ba0e2a",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/synthwave",
+      "content_sha256": "b21c98ed568ee8dbf89e60403d01fe487a5f9795b00637fa4f2350eda6513542",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/tile-design",
+      "content_sha256": "95caba814f5f9fca2a2170c406ee0a981d94fa1d471adf91d1bc441fbe1db756",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/typography-first",
+      "content_sha256": "d547ec946c25c7e5fba1688c7e7fd4d26d1dfa2eefe9f0fb34008c1ee0f0c930",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/vaporwave",
+      "content_sha256": "8a50f4b040f30d84ccad2a88117123984cd9bbfd654263914ed481c5cac717a4",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/vibrant-maximalism",
+      "content_sha256": "5156cd69b11495e35d8691830dde702336f7c1a29532524e084a8cf51e52662a",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/widget-based-design",
+      "content_sha256": "9e3262fcc531e0356d6e992a1f46943f1b4bfe8eed78d0048655d707b990b57e",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/design-it/y2k-design",
+      "content_sha256": "8eaea5035417af6c5b96c39519c485b9508eb082064a6f80cabcfc2c0d28252d",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "design-it",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/diagnose-android-overheating",
+      "content_sha256": "0d87c2a5b2e7be1dc57863fd3b81eda72f84101477354186ff0d2b25ca704216",
+      "decision": "quarantine",
+      "taxonomy": "engineering/debugging-and-error-handling",
+      "category_fine": "development-and-testing",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/ditto",
+      "content_sha256": "9971401d84aac4a69d3f2862358a1d7bf940ca6339d82f9710b2abe24f693b2d",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/agent-and-ai-development",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category agent-behavior; upstream risk critical; static signals filesystem_write,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/docs-guard",
+      "content_sha256": "fbaaef44a882dc887bfa066801a72ea252d83cc84d11bcb7a9e4d18ffe182e39",
+      "decision": "quarantine",
+      "taxonomy": "engineering/code-quality-and-refactoring",
+      "category_fine": "code-quality",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/feature-tracking",
+      "content_sha256": "5b9f37184f6d4f9093575d5a6d73f3e7260ca269cbded778792583fffc74d9db",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/collaboration-and-project-management",
+      "category_fine": "project-management",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category project-management; upstream risk critical; static signals filesystem_write. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/finishing-a-development-branch",
+      "content_sha256": "98ba5259f7ad9f3e81e2e84c86572f7f186a100ebb3e7703611839393d84e5e0",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/game-development",
+      "content_sha256": "683ca6639f5b1d365157b23c6093fc6e9bbfb1cec733bedc00a6a36a52b3b8d4",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/game-development/2d-games",
+      "content_sha256": "afbf1cb0813a611d1a291cab2e44761c2425b4b0301a63f8f8221799a3e5d1f3",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals clean; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/game-development/3d-games",
+      "content_sha256": "85b28bff4814705405794afaa8a6f505092126eb06415b9606609fb9d4d458ba",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/engine-selection",
+      "content_sha256": "b24a7531d6cb211a558f782f033b44c4eaf0da3286b99b29bd98b3857061c9f0",
+      "decision": "quarantine",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/game-development/game-art",
+      "content_sha256": "8f4cce1a2c2e060002dc35e9982577cf7a64c80d666467a24e17157e35d86ed3",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/game-audio",
+      "content_sha256": "622f7e0f2a33d8cafb5671bb41e024e0db41967ddfe0bf1193a9be6fa5aac6cf",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/game-design",
+      "content_sha256": "7e6a5d66248f5f5a22ab77e408eb833e69d7de74f0947b220d4757e6aabddfb7",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/mobile-games",
+      "content_sha256": "f81fbc3153b33be2cc034ee9b1fd3820051d83a21ac2f060183b4c5dd0294bf6",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/multiplayer",
+      "content_sha256": "4671b4ea587997bef377c4ef0509a8019383aab51c38eb29c316b1b102f4de7e",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/pc-games",
+      "content_sha256": "f40ebec1099e07a588408144aac84a54efdb9b057e1fbd9e0e7937633927ffb6",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/vr-ar",
+      "content_sha256": "413c4d1ac0c15cb4d23948403b3b938a0d7fd6f7ecc5b745cf024c1419e292a3",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/game-development/web-games",
+      "content_sha256": "081be0140158ef358b8c222a35ee0fdc41251e00f0e9288e339e1e7241cafbf6",
+      "decision": "import",
+      "taxonomy": "engineering/game-dev",
+      "category_fine": "game-development",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/git-advanced-workflows",
+      "content_sha256": "a1f3dab1329af4bcb2078b5606a33d1179420f22a39dbe260e569e7ecb286dcc",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/git-pr-workflows-git-workflow",
+      "content_sha256": "c136bf0f8aee3e307f2b35b6cc9611416740aa9c8c7a75a81af8b092089162f8",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/git-pushing",
+      "content_sha256": "7aaa1acbbe518eb58717d65e3e655b37f09b4f103bf912e20153ab10d3862460",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/github-automation",
+      "content_sha256": "7e1af3b09e4ea87e4a803f533547b18867d82463c2ae53e593d415684e5d8c69",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/go-in-depth",
+      "content_sha256": "525d4444aa97c5f08950161c32ee08aef1a23cb94a45a772f1c07043f870c003",
+      "decision": "import",
+      "taxonomy": "engineering/uncategorized-and-misc",
+      "category_fine": "development",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/hf-cloud-aws-context-discovery",
+      "content_sha256": "c72d1077fe9bdd8093b9eaf42b66e3e42f40d56b79e42edf1516d10903d4652d",
+      "decision": "import",
+      "taxonomy": "devops-and-security/aws-cloud",
+      "category_fine": "cloud",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category cloud; upstream risk safe; static signals credential,filesystem_write,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/libreoffice/base",
+      "content_sha256": "0eb9c4d30332b2af2bb40d3606ca0ef3de91a3cf278498b66f12df4a387796df",
+      "decision": "import",
+      "taxonomy": "engineering/tooling-and-monorepos",
+      "category_fine": "database-processing",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/libreoffice/calc",
+      "content_sha256": "e5b6df49401cba090e8c0ef95b54cde105dfbd46045afafea1e6da7005dd6625",
+      "decision": "import",
+      "taxonomy": "productivity-and-content/document-and-slide-management",
+      "category_fine": "spreadsheet-processing",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/libreoffice/draw",
+      "content_sha256": "375e50222cbf1a9c99abb67b801830dc6f1bdcbbc461ebb331cdce3e893b7f8a",
+      "decision": "import",
+      "taxonomy": "product-and-design/design-aesthetics-and-styles",
+      "category_fine": "graphics-processing",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/libreoffice/impress",
+      "content_sha256": "1a80bf89426e136754de7cadd9564f2bb51016c86e095101ed9c4b518efb380d",
+      "decision": "import",
+      "taxonomy": "productivity-and-content/document-and-slide-management",
+      "category_fine": "presentation-processing",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/libreoffice/writer",
+      "content_sha256": "135ea52ccfbba0186f5861199629f5d15f7baa3832ecb432b1fb7dec587854c4",
+      "decision": "import",
+      "taxonomy": "productivity-and-content/document-and-slide-management",
+      "category_fine": "document-processing",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/loki-mode",
+      "content_sha256": "43999296fb80324853c910142979d3298ca82286dc4f2b1561ac28d4f654eb17",
+      "decision": "import",
+      "taxonomy": "ai-and-data/platform-specific-apps",
+      "category_fine": "ai-ml",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals clean; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/lore",
+      "content_sha256": "a7de10174c356439e6d8e84f13279d0eb416053414122c10a0d927786676a6eb",
+      "decision": "import",
+      "taxonomy": "engineering/uncategorized-and-misc",
+      "category_fine": "development",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/markstream-angular",
+      "content_sha256": "ee3988090f5403f069b161ef043dfac38a2610ea554cce54ef7f52b31f4bcfe2",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-custom-components",
+      "content_sha256": "313fb944300e66582d06632e55a6067b1674fbbd23d5c5d62880c458bd310090",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals filesystem_write. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-install",
+      "content_sha256": "a03ec38aedba5d5e3790250673bfef1650fe2f862eb5a8fb5eff5d442d674abb",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals network,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-migration",
+      "content_sha256": "15533a3775e0bd21820f82197a681c9fdd7a656ba6e4604ce17dc267708a4b3b",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-nuxt",
+      "content_sha256": "62c40f5af2ece8d786a82102437e8084b563770c86192e72731fb6bb23a2afab",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-react",
+      "content_sha256": "57f485362321c0b6df591340db56cec4a6a7231b0eedcf2e2cad0b5cec3f1ba1",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-svelte",
+      "content_sha256": "34b56d9c07b59b9318d6b74efee9c05168f32da8b3fad2107850070bf692c613",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-vue",
+      "content_sha256": "c0f721d1ce6ac6d6a0b53b9122893f29111d9f70b4da1148216ad93431a061fc",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-vue2",
+      "content_sha256": "fad9d3b8e96781c62d4ff4bef408445c0101298dfcd65cef1531ea8ef9619ec1",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-vue2-cli",
+      "content_sha256": "92ccc5eca619dc95e94657b1a4860d33810b75e0e9811ea14a5b87d53a5ab436",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/markstream-vue2-vite",
+      "content_sha256": "a6c7c469f9a50aeda96feadda5603a1430ba9531d8423533faab2514859a4801",
+      "decision": "import",
+      "taxonomy": "engineering/frontend-and-ui",
+      "category_fine": "frontend",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category frontend; upstream risk critical; static signals clean. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/modellix",
+      "content_sha256": "5360080de841d3adb9c03b1d6fc8dff476f3f58bbef16416494e21cf715db720",
+      "decision": "import",
+      "taxonomy": "productivity-and-content/media-and-video-creation",
+      "category_fine": "creative",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category creative; upstream risk critical; static signals filesystem_write,network,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/monopoly/patterns",
+      "content_sha256": "0ed8ac011de9cf4f2551357cd2bd6c27b1508c2b6b279751cb19247730cb5160",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/software-architecture-and-ddd",
+      "category_fine": "monopoly",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/monopoly/scale-benchmarks",
+      "content_sha256": "bdad2c35932337c4cd72469e669fd09e7f6c7825a13b3784a9eb66a08a064b85",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/planning-and-execution",
+      "category_fine": "monopoly",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/monopoly/security-checklist",
+      "content_sha256": "cce2b0516fc59dcb05e1a7616e13d61e556894c6447cfc4fda88e13448abb8bd",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/testing-and-quality-assurance",
+      "category_fine": "monopoly",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/monopoly/tech-matrix",
+      "content_sha256": "d0297528b9a4367c7b84dfc0ea57df3c63294617c8d3c7736bc04c9651580861",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/planning-and-execution",
+      "category_fine": "monopoly",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/n8n-agents",
+      "content_sha256": "ee1a5c68e59fbb6d5c80eb988fc40b14e8a79c1b3f35e0a8f87c10caf1d68574",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category automation; upstream risk critical; static signals credential,filesystem_write,network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/n8n-binary-and-data",
+      "content_sha256": "1613c79c165a508fa34c7e84d28888af8be4a090c0b72a37445f6336c4bb1e35",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category automation; upstream risk unknown; static signals credential,filesystem_write,network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/n8n-code-tool",
+      "content_sha256": "7e4aa8cfea42a8c63a764b19b050f798ceb0e100e5a17376e6c75e3dbbb004f7",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category automation; upstream risk unknown; static signals credential,filesystem_write. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/n8n-error-handling",
+      "content_sha256": "5b01d01697218106f7a2fab7002ff697038234180a48e5dd8219ffadc7898d10",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category automation; upstream risk unknown; static signals filesystem_write,network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/n8n-multi-instance",
+      "content_sha256": "5c0c4f8ac03343708abc91616ffbce0399e6eaa9133d535749a307f3203b8bd4",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category automation; upstream risk critical; static signals credential,filesystem_write. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/n8n-node-configuration",
+      "content_sha256": "6d1b19c751529a7f5c10695f244c83179d1fc4ad3106f5301245bdfc824f74e3",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/n8n-subworkflows",
+      "content_sha256": "cb6397ad3a0aed892311e88afd148de9f2656d82ea5c3033abac4aac9116c984",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category automation; upstream risk unknown; static signals filesystem_write,network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/ontoly-software-graph",
+      "content_sha256": "222f185f0aca910fd33c8750dee580cf0953fab14bdf48badc91860aa12c4620",
+      "decision": "import",
+      "taxonomy": "engineering/code-quality-and-refactoring",
+      "category_fine": "development",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category development; upstream risk critical; static signals filesystem_write,network,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/optim-agent",
+      "content_sha256": "0d03c1e9f7d782e99ba7d9660d7506c2fe47573c5750d1a517e5218474f8ffc6",
+      "decision": "import",
+      "taxonomy": "ai-and-data/data-engineering",
+      "category_fine": "data",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category data; upstream risk safe; static signals network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/pptx-deck-creation",
+      "content_sha256": "22dd6ca875e585e463d9786505b5072ffbc7893cbbdb353df12e6f81c7f162be",
+      "decision": "import",
+      "taxonomy": "productivity-and-content/cloud-and-office-automation",
+      "category_fine": "presentation-processing",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category office-productivity; upstream risk critical; static signals credential,filesystem_write,network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/pr-writer",
+      "content_sha256": "127008dba842aa0a9cee7f10e9f9a00553f6467433d95c215d32feda22090a7b",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/git-and-github-workflows",
+      "category_fine": "workflow",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/repo-maintainer",
+      "content_sha256": "22c0710a91f15820462a1b4bfb4a4a0c78051b0434a2916e593d859e8366fbb6",
+      "decision": "import",
+      "taxonomy": "engineering/uncategorized-and-misc",
+      "category_fine": "uncategorized",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/security/aws-compliance-checker",
+      "content_sha256": "4cdd8bbc6b6e17854fdbf86485280ecd3b84feacf4927065a6734222764a4a89",
+      "decision": "import",
+      "taxonomy": "devops-and-security/aws-cloud",
+      "category_fine": "security",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/security/aws-iam-best-practices",
+      "content_sha256": "52a52c7d8ba8ec3fb80413892e587178c93c5f338e6dc8a4aa463d6bb6688527",
+      "decision": "import",
+      "taxonomy": "devops-and-security/aws-cloud",
+      "category_fine": "security",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/security/aws-secrets-rotation",
+      "content_sha256": "444598ff3f1db93bf35fcaf688ee2ad182db5fa5b4de7d030717059365ca5e1d",
+      "decision": "import",
+      "taxonomy": "devops-and-security/aws-cloud",
+      "category_fine": "security",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/security/aws-security-audit",
+      "content_sha256": "9bee2dfa478ed49685379576ea84303f9b3b1677e4de5f75efa1ff6a208a90a4",
+      "decision": "import",
+      "taxonomy": "devops-and-security/aws-cloud",
+      "category_fine": "security",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/sendblue/sendblue-api",
+      "content_sha256": "44abe453640960bdd815e343301c3eb3b17b0a966fce646250465f912aef725d",
+      "decision": "import",
+      "taxonomy": "engineering/integrations-and-services",
+      "category_fine": "api-integration",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/sendblue/sendblue-cli",
+      "content_sha256": "be3d7084434918cc2e76327a552f9f8740ade5b12e5853d10c2218ac230a631e",
+      "decision": "import",
+      "taxonomy": "engineering/integrations-and-services",
+      "category_fine": "api-integration",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/sendblue/sendblue-notify",
+      "content_sha256": "87c9be02eff077a63699cc780c2a6e9ebd61307a0631231d09935ac44044d969",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/sendblue/textme",
+      "content_sha256": "4e6832075ce0097e7fb258647f4e61bc51f17037cd0a8b5c4318da3184d747c3",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/sshepherd",
+      "content_sha256": "6ca597af908aab9555c5e212f9c872e6a9b94f6fd7d3c31fcdedb29778581f48",
+      "decision": "import",
+      "taxonomy": "devops-and-security/ci-cd-and-pipelines",
+      "category_fine": "devops",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category devops; upstream risk critical; static signals credential,filesystem_write,shell. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/super-code/bash",
+      "content_sha256": "4eefbd05a195045a5937759b827516cf18a36a227a4a0ea88ff48a3bb07e6f5e",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/c",
+      "content_sha256": "3f674aa0be0f6f51c3168a72e15c33fc5226d6648c1b979ac54826c3b5c59231",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/cpp",
+      "content_sha256": "611b91e957ec6af2bf4350a48e744631c464c47eb6a8d31ec4f2f5497cf233c8",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/csharp",
+      "content_sha256": "4d4cd566b6ee9165212213b5e8ba4235dd78354943f2ed1e435ec5167a4fd59d",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/dart",
+      "content_sha256": "2648777a4539d2d1e5c91de17fb4fb5ee1579a406a25c3244f602a37b367ea6f",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/elixir",
+      "content_sha256": "f828377b496b41f0a18a1e50e96ddde454affb6ee47511fffb56363811179045",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/go",
+      "content_sha256": "be6adae1ac671dbcf12978012cd23d7af416916999dff885b623371199eedade",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/java",
+      "content_sha256": "ab21bb33d35790a2b0419b501880207013b8db6af4aa6e87702f060c98541782",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/kotlin",
+      "content_sha256": "058f53f05613ad9e7bce13fbef26d1c2030fa74238abc9ccac68c6d4d94da3e5",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/php",
+      "content_sha256": "b0f6f9bc8375b049c9b6f2a355702556a5d539f8379011de3db5547c80c28f82",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/python",
+      "content_sha256": "1d56c39bdc21b9f6fda62db9069ef6b121292678c98f8c8ccde35570c5adfbf1",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/ruby",
+      "content_sha256": "873090e79ea53861e710abb66cc7d46c94d3c944982de153aa2162667d27ac3c",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/rust",
+      "content_sha256": "e9e062143c87e453ee0b594eafa281a5ddae267f7a47d9e37fc69e43157add9d",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/scala",
+      "content_sha256": "4377f9a97acb5ebf832e9d657e150dfc8d1311ce8371b3c3266d1a64a250ec63",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/swift",
+      "content_sha256": "db2892f4d6e32b36214f7713cffc7ca880f4eea9646934bcc0b130b7eebe1cd9",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/super-code/typescript",
+      "content_sha256": "d12ab8f2ea3bf59383e50b9e7b6b83ac2df34be7b2cf832db1ff3522015732d8",
+      "decision": "import",
+      "taxonomy": "workflows-and-management/programming-languages-and-scripts",
+      "category_fine": "super-code",
+      "canonical_skill_id": null,
+      "reason": "Pinned-index path correction; load name and Git tree identity verified unchanged; catalog content and safety profile retained."
+    },
+    {
+      "source_path": "skills/telegram-bot-messaging",
+      "content_sha256": "9fb493125fd6293f429ee3c8256e396946fa8c0df8d53ce7f93e559c48b1c5ed",
+      "decision": "import",
+      "taxonomy": "engineering/uncategorized-and-misc",
+      "category_fine": "productivity",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals credential,filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/test-guard",
+      "content_sha256": "10c7f46c6985deca9d943ed7d2b1c1753ec6b0c07d18b416fe1ce2aaaee3dce1",
+      "decision": "quarantine",
+      "taxonomy": "devops-and-security/testing-and-validation",
+      "category_fine": "testing",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/tools-page-seo-optimizer",
+      "content_sha256": "f43cf6a145916da16c0dd3f12a2f14d8865f1e2e26a113d83f24d74c887b12e9",
+      "decision": "import",
+      "taxonomy": "marketing-and-seo/search-engine-optimization",
+      "category_fine": "seo",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/using-n8n-mcp-skills",
+      "content_sha256": "ae1b9940feac2af8e2fdf8625e7cc243ae95dc7dcadeb10f3c040cb5eb9240ff",
+      "decision": "import",
+      "taxonomy": "devops-and-security/automation-and-apis",
+      "category_fine": "automation",
+      "canonical_skill_id": null,
+      "reason": "Added in v15.3.0; manually classified from upstream category uncategorized; upstream risk critical; static signals credential,filesystem_write,network. Import as unknown for task-scoped review."
+    },
+    {
+      "source_path": "skills/warehouse",
+      "content_sha256": "b73b0df830388531bc27186e8c9bbd213022232381b0b45dc1778c41f4ab6752",
+      "decision": "quarantine",
+      "taxonomy": "ai-and-data/data-engineering",
+      "category_fine": "data",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/weaviate-cookbooks",
+      "content_sha256": "201b911f6c3ed036add12425e3ca70e95bf1113031aa317d9fdade4618bc4175",
+      "decision": "import",
+      "taxonomy": "engineering/uncategorized-and-misc",
+      "category_fine": "ai",
+      "canonical_skill_id": null,
+      "reason": "Modified in v15.3.0; existing taxonomy retained; static signals filesystem_write,network,shell; content resets to unknown review state."
+    },
+    {
+      "source_path": "skills/woo-guard",
+      "content_sha256": "deb018d509631a49a9ee5f7c5ef79b026cfa1138f5feed92de655f630df4b2dc",
+      "decision": "quarantine",
+      "taxonomy": "workflows-and-management/wordpress-development",
+      "category_fine": "workflow-bundle",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    },
+    {
+      "source_path": "skills/wp-guard",
+      "content_sha256": "858f3723c6e749f6c48178ca3ba308bb72de67a1db95867d95cc4167a9d0502e",
+      "decision": "quarantine",
+      "taxonomy": "workflows-and-management/wordpress-development",
+      "category_fine": "workflow-bundle",
+      "canonical_skill_id": null,
+      "reason": "Missing per-skill license evidence at the pinned commit; retained as non-runnable quarantine"
+    }
+  ]
+}

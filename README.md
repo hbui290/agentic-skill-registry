@@ -74,9 +74,9 @@ when it would exceed scope or a high-risk signal needs confirmation.
 
 | Item | State |
 | --- | --- |
-| Active catalog records | 1,953 |
-| Searchable records | 1,949 |
-| Quarantined records | 2 |
+| Active catalog records | 1,982 |
+| Searchable records | 1,978 |
+| Quarantined records | 12 |
 | Native Codex installation | `skill-librarian` only |
 
 ## Limits by design

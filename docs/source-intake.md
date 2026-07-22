@@ -119,6 +119,51 @@ git diff --check
 The search results must include `azure-blob-storage` in the top five, and the
 strict verifier must print `result=pass failed=0`.
 
+## Update an existing source
+
+Prepare an exact-commit delta outside the repository, review every emitted
+candidate, then commit it from a clean worktree:
+
+```bash
+skill-registry prepare-update \
+  --root "$PWD" \
+  --source-id example-source \
+  --url https://github.com/example/skills.git \
+  --commit 0123456789abcdef0123456789abcdef01234567 \
+  --skills-root skills \
+  --license MIT \
+  --license-note "License evidence reviewed at the pinned commit" \
+  --staging /tmp/example-source-update \
+  --format json
+
+# Edit /tmp/example-source-update/review.json, then:
+skill-registry commit-update \
+  --root "$PWD" \
+  --manifest /tmp/example-source-update/manifest.json \
+  --review /tmp/example-source-update/review.json \
+  --format json
+```
+
+For sources with a metadata index, that index is the candidate allowlist and
+may include nested skills. Per-skill license values come from that pinned index,
+not from a source-wide default. An addition without license evidence cannot be
+activated; retain it as `quarantine` with `UNKNOWN` license until a later pinned
+index supplies evidence.
+
+Existing records are reconciled by exact source path first, then by the stable
+index ID only when repairing a legacy flattened path. Path corrections must be
+imported. Modified bundles may be imported, canonicalized, or quarantined;
+additions have the same three choices. `reject` is intentionally unavailable
+for updates because advancing the source lock while omitting an indexed bundle
+would make the next update impossible to reconcile. Quarantine therefore acts
+as the durable, non-runnable record for a reviewed but unapproved bundle.
+
+Unchanged Git tree objects are not recopied, so unchanged upstream symlinks are
+never followed. A new or modified bundle containing a symlink is rejected.
+Existing oversized bundles may update only when neither file count nor byte
+count grows; the normal intake limits are not raised. Source deletion updates
+are currently rejected rather than inferred.
+
 ## Rollback
 
 Keep each reviewed source import in one dedicated Git commit. Roll back the

@@ -26,10 +26,14 @@ def test_bootstrap_reconciles_complete_repository(repo_root):
     legacy_quarantine = [
         record for record in quarantine if record["source_id"] in legacy_sources
     ]
-    assert len(legacy_skills) == 1952
-    assert len(quarantine) == 2
-    assert len(legacy_quarantine) == 2
-    assert {record["name"] for record in quarantine} == {"SPDD", "linear"}
+    assert len(legacy_skills) == 1981
+    assert len(quarantine) == 12
+    assert len(legacy_quarantine) == 12
+    assert {"SPDD", "linear"} <= {record["name"] for record in quarantine}
+    assert sum(
+        record["source_id"] == "sickn33-agentic-awesome-skills"
+        for record in quarantine
+    ) == 10
     assert len({record["skill_id"] for record in skills + quarantine}) == len(
         skills + quarantine
     )

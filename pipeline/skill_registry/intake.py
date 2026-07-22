@@ -91,7 +91,7 @@ def propose_classification(
     candidate_tokens = tokenize(
         f"{candidate.get('name', '')} {candidate.get('description', '')}"
     )
-    scores: dict[tuple[str, str], int] = {}
+    scores: list[tuple[int, float, str, str]] = []
     for entry in index:
         taxonomy = str(entry.get("taxonomy", ""))
         category = str(entry.get("category_fine", ""))
@@ -101,12 +101,19 @@ def propose_classification(
         )
         overlap = len(candidate_tokens & entry_tokens)
         if overlap:
-            key = (taxonomy, category)
-            scores[key] = scores.get(key, 0) + overlap
+            scores.append(
+                (
+                    overlap,
+                    jaccard(candidate_tokens, entry_tokens),
+                    taxonomy,
+                    category,
+                )
+            )
 
     if scores:
-        taxonomy, category = min(
-            scores, key=lambda key: (-scores[key], key[0], key[1])
+        _, _, taxonomy, category = min(
+            scores,
+            key=lambda item: (-item[0], -item[1], item[2], item[3]),
         )
     else:
         taxonomy = "workflows-and-management/uncategorized-and-misc"
@@ -200,6 +207,22 @@ def duplicate_evidence(
                 )
 
     return sorted(evidence, key=lambda item: (str(item["kind"]), str(item["skill_id"])))
+
+
+def discovery_metadata_for_record(
+    record: dict[str, object], index: list[dict[str, object]]
+) -> dict[str, object] | None:
+    skill_id = record.get("skill_id")
+    load_name = record.get("load_name")
+    return next(
+        (
+            entry
+            for entry in index
+            if entry.get("skill_id") == skill_id
+            or entry.get("flat_name") == load_name
+        ),
+        None,
+    )
 
 
 def validate_source_spec(spec: object) -> dict[str, str]:
@@ -397,6 +420,140 @@ def discover_source_bundles(skills_root: Path) -> list[Path]:
     return sorted(bundles, key=lambda item: item.relative_to(root).as_posix())
 
 
+def indexed_source_bundles(
+    checkout: Path, metadata_index: str, skills_root: str
+) -> tuple[dict[str, Path], dict[str, dict[str, object]]]:
+    checkout = Path(checkout)
+    index_path = checkout / metadata_index
+    try:
+        if index_path.is_file() and not index_path.is_symlink():
+            payload = json.loads(index_path.read_text(encoding="utf-8"))
+        else:
+            with tempfile.TemporaryDirectory(prefix="asr-git-home-") as home:
+                result = subprocess.run(
+                    [
+                        "git",
+                        "-C",
+                        str(checkout),
+                        "-c",
+                        "credential.helper=",
+                        "show",
+                        f"HEAD:{metadata_index}",
+                    ],
+                    check=True,
+                    text=True,
+                    capture_output=True,
+                    timeout=60,
+                    env={
+                        "PATH": os.environ.get("PATH", ""),
+                        "HOME": home,
+                        "GIT_TERMINAL_PROMPT": "0",
+                        "GIT_ASKPASS": "/usr/bin/false",
+                        "GCM_INTERACTIVE": "never",
+                        "GIT_CONFIG_NOSYSTEM": "1",
+                        "GIT_ATTR_NOSYSTEM": "1",
+                        "GIT_LFS_SKIP_SMUDGE": "1",
+                    },
+                )
+            payload = json.loads(result.stdout)
+    except (
+        OSError,
+        UnicodeError,
+        json.JSONDecodeError,
+        subprocess.SubprocessError,
+    ) as error:
+        raise IntakeError(f"metadata index could not be read: {error}") from error
+    if not isinstance(payload, list) or not all(
+        isinstance(item, dict) for item in payload
+    ):
+        raise IntakeError("metadata index must be a list of objects")
+
+    bundles: dict[str, Path] = {}
+    metadata: dict[str, dict[str, object]] = {}
+    prefix = skills_root + "/"
+    checkout_root = checkout.resolve()
+    for item in payload:
+        source_path = item.get("path")
+        if (
+            not isinstance(source_path, str)
+            or SAFE_RELATIVE_PATH.fullmatch(source_path) is None
+            or not source_path.startswith(prefix)
+            or any(part in {".", ".."} for part in source_path.split("/"))
+            or source_path in bundles
+        ):
+            raise IntakeError("metadata index source path is invalid")
+        bundle = checkout / source_path
+        if bundle.is_symlink() or not bundle.is_dir():
+            raise IntakeError(f"indexed bundle root is invalid: {source_path}")
+        if not bundle.resolve().is_relative_to(checkout_root):
+            raise IntakeError(f"indexed bundle escaped checkout: {source_path}")
+        if not (bundle / "SKILL.md").is_file():
+            raise IntakeError(f"indexed bundle SKILL.md is missing: {source_path}")
+        bundles[source_path] = bundle
+        metadata[source_path] = item
+    return bundles, metadata
+
+
+def reconcile_indexed_source_paths(
+    records: list[dict[str, object]],
+    metadata: dict[str, dict[str, object]],
+) -> tuple[dict[str, dict[str, object]], list[dict[str, str]]]:
+    path_by_id: dict[str, str] = {}
+    for source_path, item in metadata.items():
+        index_id = item.get("id")
+        if (
+            not isinstance(index_id, str)
+            or not index_id
+            or index_id in path_by_id
+        ):
+            raise IntakeError("metadata index IDs must be unique strings")
+        path_by_id[index_id] = source_path
+    mapped: dict[str, dict[str, object]] = {}
+    corrections: list[dict[str, str]] = []
+    for record in records:
+        load_name = record.get("load_name")
+        source_path = record.get("source_path")
+        skill_id = record.get("skill_id")
+        if (
+            not isinstance(source_path, str)
+            or not isinstance(skill_id, str)
+        ):
+            raise IntakeError("registry record does not match metadata index")
+        if source_path in metadata:
+            indexed_path = source_path
+        elif isinstance(load_name, str) and load_name in path_by_id:
+            indexed_path = path_by_id[load_name]
+        else:
+            raise IntakeError("registry record does not match metadata index")
+        if indexed_path in mapped:
+            raise IntakeError("metadata index mapping is not unique")
+        mapped[indexed_path] = record
+        if indexed_path != source_path:
+            corrections.append(
+                {"from": source_path, "skill_id": skill_id, "to": indexed_path}
+            )
+    if set(mapped) != set(metadata):
+        raise IntakeError("existing registry does not cover metadata index")
+    return mapped, sorted(corrections, key=lambda item: item["from"])
+
+
+def source_object_id(checkout: Path, source_path: str) -> str:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(checkout), "rev-parse", f"HEAD:{source_path}"],
+            check=True,
+            text=True,
+            capture_output=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return tree_sha256(Path(checkout) / source_path)
+    object_id = result.stdout.strip()
+    if not re.fullmatch(r"[0-9a-f]{40}", object_id):
+        raise IntakeError(f"source object identity is invalid: {source_path}")
+    return object_id
+
+
 def parse_skill_frontmatter(path: Path) -> dict[str, object]:
     try:
         content = Path(path).read_text(encoding="utf-8")
@@ -418,7 +575,15 @@ def parse_skill_frontmatter(path: Path) -> dict[str, object]:
     return metadata
 
 
-def inspect_bundle(bundle: Path) -> dict[str, object]:
+def inspect_bundle(
+    bundle: Path,
+    max_files: int | None = None,
+    max_bytes: int | None = None,
+) -> dict[str, object]:
+    if max_files is None:
+        max_files = MAX_BUNDLE_FILES
+    if max_bytes is None:
+        max_bytes = MAX_BUNDLE_BYTES
     bundle = Path(bundle)
     if bundle.is_symlink():
         raise IntakeError(f"symlink bundle root rejected: {bundle}")
@@ -437,9 +602,9 @@ def inspect_bundle(bundle: Path) -> dict[str, object]:
                 raise IntakeError(f"hardlink rejected: {relative}")
             files.append(path)
             total += stat.st_size
-    if len(files) > MAX_BUNDLE_FILES:
+    if len(files) > max_files:
         raise IntakeError("bundle file limit exceeded")
-    if total > MAX_BUNDLE_BYTES:
+    if total > max_bytes:
         raise IntakeError("bundle byte limit exceeded")
     metadata = parse_skill_frontmatter(marker)
     return {
@@ -449,6 +614,33 @@ def inspect_bundle(bundle: Path) -> dict[str, object]:
         "byte_count": total,
         "content_sha256": tree_sha256(bundle),
     }
+
+
+def _bundle_size(bundle: Path) -> tuple[int, int]:
+    count = 0
+    total = 0
+    for path in Path(bundle).rglob("*"):
+        if path.is_symlink():
+            raise IntakeError(f"symlink rejected: {path.relative_to(bundle)}")
+        if path.is_file():
+            stat = path.stat()
+            if stat.st_nlink > 1:
+                raise IntakeError(f"hardlink rejected: {path.relative_to(bundle)}")
+            count += 1
+            total += stat.st_size
+    return count, total
+
+
+def inspect_update_bundle(bundle: Path, base_bundle: Path) -> dict[str, object]:
+    base_count, base_bytes = _bundle_size(base_bundle)
+    target_count, target_bytes = _bundle_size(bundle)
+    max_files = MAX_BUNDLE_FILES if base_count <= MAX_BUNDLE_FILES else base_count
+    max_bytes = MAX_BUNDLE_BYTES if base_bytes <= MAX_BUNDLE_BYTES else base_bytes
+    if target_count > max_files:
+        raise IntakeError("bundle file limit exceeded")
+    if target_bytes > max_bytes:
+        raise IntakeError("bundle byte limit exceeded")
+    return inspect_bundle(bundle, max_files=max_files, max_bytes=max_bytes)
 
 
 def _object_list(path: Path, key: str) -> list[dict[str, object]]:
@@ -530,6 +722,297 @@ def prepare_source(root: Path, spec: object, staging: Path) -> dict[str, object]
         review = {
             "schema_version": 1,
             "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "decisions": [
+                {
+                    "source_path": candidate["source_path"],
+                    "decision": "pending",
+                    "taxonomy": candidate["proposed_taxonomy"],
+                    "category_fine": candidate["proposed_category_fine"],
+                    "canonical_skill_id": None,
+                    "reason": "",
+                }
+                for candidate in candidates
+            ],
+        }
+        dump_json_atomic(staging / "review.json", review)
+    except Exception:
+        shutil.rmtree(staging)
+        raise
+    return manifest
+
+
+def prepare_source_update(
+    root: Path, spec: object, staging: Path
+) -> dict[str, object]:
+    root = Path(root)
+    staging = Path(staging)
+    if staging.exists() or staging.is_symlink():
+        raise IntakeError(f"staging already exists: {staging}")
+    if staging.resolve().is_relative_to(root.resolve()):
+        raise IntakeError(f"staging must not be inside repository: {staging}")
+    normalized = validate_source_spec(spec)
+    sources = _object_list(root / "registry/sources.lock.json", "sources")
+    existing_source = next(
+        (
+            source
+            for source in sources
+            if source.get("source_id") == normalized["source_id"]
+        ),
+        None,
+    )
+    if existing_source is None:
+        raise IntakeError(f"source_id does not exist: {normalized['source_id']}")
+    if (
+        existing_source.get("url") != normalized["url"]
+        or existing_source.get("skills_root") != normalized["skills_root"]
+    ):
+        raise IntakeError("source update identity does not match source lock")
+    base_commit = existing_source.get("commit")
+    if not isinstance(base_commit, str) or COMMIT.fullmatch(base_commit) is None:
+        raise IntakeError("existing source commit is invalid")
+    if base_commit == normalized["commit"]:
+        raise IntakeError("source update commit is already pinned")
+
+    records = _object_list(root / "registry/skills.json", "skills")
+    records += _object_list(root / "registry/quarantine.json", "records")
+    source_records = [
+        record
+        for record in records
+        if record.get("source_id") == normalized["source_id"]
+    ]
+    index = _object_list(root / "librarian-index.json", "entries")
+    profiles = _object_list(
+        root / "registry/safety-signals.json", "profiles"
+    )
+    profile_by_id = {
+        str(profile.get("skill_id")): profile
+        for profile in profiles
+        if isinstance(profile.get("skill_id"), str)
+    }
+
+    preflight_source_tree(normalized)
+    with tempfile.TemporaryDirectory(prefix="asr-source-update-") as temporary:
+        temporary_root = Path(temporary)
+        base_checkout = temporary_root / "base"
+        target_checkout = temporary_root / "target"
+        base_spec = {**normalized, "commit": base_commit}
+        checkout_pinned_source(base_spec, base_checkout)
+        checkout_pinned_source(normalized, target_checkout)
+        metadata_index = existing_source.get("metadata_index")
+        if isinstance(metadata_index, str) and metadata_index:
+            base_bundles, base_source_metadata = indexed_source_bundles(
+                base_checkout, metadata_index, normalized["skills_root"]
+            )
+            target_bundles, target_source_metadata = indexed_source_bundles(
+                target_checkout, metadata_index, normalized["skills_root"]
+            )
+        else:
+            base_bundles = {
+                bundle.relative_to(base_checkout).as_posix(): bundle
+                for bundle in discover_source_bundles(
+                    base_checkout / normalized["skills_root"]
+                )
+            }
+            target_bundles = {
+                bundle.relative_to(target_checkout).as_posix(): bundle
+                for bundle in discover_source_bundles(
+                    target_checkout / normalized["skills_root"]
+                )
+            }
+            base_source_metadata = {path: {} for path in base_bundles}
+            target_source_metadata = {path: {} for path in target_bundles}
+        base_object_ids = {
+            path: source_object_id(base_checkout, path) for path in base_bundles
+        }
+        target_object_ids = {
+            path: source_object_id(target_checkout, path)
+            for path in target_bundles
+        }
+
+        for record in source_records:
+            digest = str(record.get("content_sha256", ""))
+            catalog_path = record.get("catalog_path")
+            if not isinstance(catalog_path, str) or tree_sha256(
+                root / catalog_path
+            ) != digest:
+                raise IntakeError("existing catalog content does not match registry")
+        if isinstance(metadata_index, str) and metadata_index:
+            record_by_base_path, corrections = reconcile_indexed_source_paths(
+                source_records, base_source_metadata
+            )
+        else:
+            record_by_base_path = {}
+            corrections = []
+            for record in source_records:
+                source_path = str(record.get("source_path", ""))
+                matches = [
+                    path
+                    for path in base_bundles
+                    if (
+                        path == source_path
+                        or path.rsplit("/", 1)[-1]
+                        == source_path.rsplit("/", 1)[-1]
+                    )
+                ]
+                if len(matches) != 1:
+                    raise IntakeError(
+                        "existing source path cannot be reconciled: "
+                        f"{source_path}"
+                    )
+                matched_path = matches[0]
+                if matched_path in record_by_base_path:
+                    raise IntakeError("existing source paths are not unique")
+                record_by_base_path[matched_path] = record
+                if matched_path != source_path:
+                    corrections.append(
+                        {
+                            "from": source_path,
+                            "skill_id": str(record["skill_id"]),
+                            "to": matched_path,
+                        }
+                    )
+        if set(record_by_base_path) != set(base_bundles):
+            raise IntakeError("existing registry does not cover pinned source snapshot")
+        removed = sorted(set(base_bundles) - set(target_bundles))
+        if removed:
+            raise IntakeError("source removals are not supported")
+
+        candidates: list[dict[str, object]] = []
+        for source_path in sorted(target_bundles):
+            existing = record_by_base_path.get(source_path)
+            indexed_license = target_source_metadata[source_path].get("license")
+            target_license = (
+                indexed_license.strip()
+                if isinstance(indexed_license, str) and indexed_license.strip()
+                else None
+            )
+            existing_license = existing.get("license") if existing else None
+            license_changed = (
+                existing is not None
+                and target_license is not None
+                and target_license != existing_license
+            )
+            unchanged = (
+                existing is not None
+                and base_object_ids[source_path] == target_object_ids[source_path]
+            )
+            corrected = (
+                existing is not None
+                and existing.get("source_path") != source_path
+            )
+            if unchanged and not corrected and not license_changed:
+                continue
+            metadata = (
+                discovery_metadata_for_record(existing, index)
+                if existing
+                else None
+            )
+            if unchanged and existing is not None:
+                if metadata is None:
+                    raise IntakeError("existing discovery metadata is missing")
+                catalog_path = str(existing["catalog_path"])
+                file_count, byte_count = _bundle_size(root / catalog_path)
+                inspected = {
+                    "name": existing["name"],
+                    "description": metadata["description"],
+                    "content_sha256": existing["content_sha256"],
+                    "file_count": file_count,
+                    "byte_count": byte_count,
+                }
+                profile = profile_by_id.get(str(existing["skill_id"]))
+                if profile is None:
+                    if existing.get("state") != "quarantined":
+                        raise IntakeError("existing safety profile is missing")
+                    safety_profile = scan_skill_bundle(
+                        target_bundles[source_path],
+                        str(inspected["content_sha256"]),
+                    )
+                else:
+                    safety_profile = {
+                        key: value
+                        for key, value in profile.items()
+                        if key != "skill_id"
+                    }
+            else:
+                inspected = (
+                    inspect_update_bundle(
+                        target_bundles[source_path], base_bundles[source_path]
+                    )
+                    if existing is not None
+                    else inspect_bundle(target_bundles[source_path])
+                )
+                safety_profile = scan_skill_bundle(
+                    target_bundles[source_path],
+                    str(inspected["content_sha256"]),
+                )
+            classification = (
+                {
+                    "taxonomy": metadata["taxonomy"],
+                    "category_fine": metadata["category_fine"],
+                }
+                if metadata is not None
+                else propose_classification(inspected, index)
+            )
+            evidence = duplicate_evidence(
+                {
+                    **inspected,
+                    "source_id": normalized["source_id"],
+                    "source_path": source_path,
+                    "load_name": inspected["name"],
+                },
+                records,
+                index,
+            )
+            candidates.append(
+                {
+                    "source_path": source_path,
+                    "change": (
+                        "path-corrected"
+                        if unchanged and not license_changed
+                        else "modified" if existing is not None else "added"
+                    ),
+                    "name": inspected["name"],
+                    "description": inspected["description"],
+                    "content_sha256": inspected["content_sha256"],
+                    "safety_profile": safety_profile,
+                    "file_count": inspected["file_count"],
+                    "byte_count": inspected["byte_count"],
+                    "proposed_taxonomy": classification["taxonomy"],
+                    "proposed_category_fine": classification["category_fine"],
+                    "duplicate_evidence": evidence,
+                    "license": (
+                        target_license or existing_license
+                        if isinstance(metadata_index, str) and metadata_index
+                        else normalized["license"]
+                    ),
+                    "upstream_category": target_source_metadata[
+                        source_path
+                    ].get("category"),
+                    "upstream_risk": target_source_metadata[source_path].get(
+                        "risk"
+                    ),
+                    "upstream_source": target_source_metadata[source_path].get(
+                        "source"
+                    ),
+                }
+            )
+
+    manifest: dict[str, object] = {
+        "schema_version": 1,
+        "source": normalized,
+        "base_commit": base_commit,
+        "path_corrections": sorted(corrections, key=lambda item: item["from"]),
+        "candidates": candidates,
+    }
+    staging.mkdir()
+    try:
+        manifest_path = staging / "manifest.json"
+        dump_json_atomic(manifest_path, manifest)
+        review = {
+            "schema_version": 1,
+            "manifest_sha256": hashlib.sha256(
+                manifest_path.read_bytes()
+            ).hexdigest(),
             "decisions": [
                 {
                     "source_path": candidate["source_path"],
@@ -1123,6 +1606,494 @@ def commit_source(
         "imported": decision_names.count("import"),
         "quarantined": decision_names.count("quarantine"),
         "rejected": decision_names.count("reject"),
+        "result": "pass",
+        "strict_verifier": "pass",
+    }
+
+
+def commit_source_update(
+    root: Path, manifest_path: Path, review_path: Path
+) -> dict[str, object]:
+    root = Path(root)
+    _require_clean_worktree(root)
+    manifest_bytes = Path(manifest_path).read_bytes()
+    manifest = json.loads(manifest_bytes)
+    review = load_json(Path(review_path))
+    if not isinstance(manifest, dict) or set(manifest) != {
+        "schema_version",
+        "source",
+        "base_commit",
+        "path_corrections",
+        "candidates",
+    }:
+        raise IntakeError("source update manifest fields are invalid")
+    if manifest.get("schema_version") != 1:
+        raise IntakeError("source update schema_version is invalid")
+    source = validate_source_spec(manifest.get("source"))
+    base_commit = manifest.get("base_commit")
+    corrections = manifest.get("path_corrections")
+    candidates = manifest.get("candidates")
+    if (
+        not isinstance(base_commit, str)
+        or COMMIT.fullmatch(base_commit) is None
+        or not isinstance(corrections, list)
+        or not all(isinstance(item, dict) for item in corrections)
+        or not isinstance(candidates, list)
+        or not all(isinstance(item, dict) for item in candidates)
+    ):
+        raise IntakeError("source update manifest is invalid")
+    candidate_paths = [candidate.get("source_path") for candidate in candidates]
+    if (
+        not all(isinstance(path, str) for path in candidate_paths)
+        or len(candidate_paths) != len(set(candidate_paths))
+        or any(
+            candidate.get("change")
+            not in {"added", "modified", "path-corrected"}
+            for candidate in candidates
+        )
+    ):
+        raise IntakeError("source update candidates are invalid")
+
+    skills_payload = _load_json_object(root / "registry/skills.json")
+    quarantine_payload = _load_json_object(root / "registry/quarantine.json")
+    skills = skills_payload.get("skills")
+    quarantine = quarantine_payload.get("records")
+    if not isinstance(skills, list) or not isinstance(quarantine, list):
+        raise IntakeError("registry records are invalid")
+    known_ids = {
+        str(record.get("skill_id"))
+        for record in [*skills, *quarantine]
+        if isinstance(record, dict) and isinstance(record.get("skill_id"), str)
+    }
+    validate_review(manifest_bytes, review, known_ids)
+    decisions = review["decisions"]
+    decision_by_path = {
+        str(decision["source_path"]): decision for decision in decisions
+    }
+    for candidate in candidates:
+        decision = decision_by_path[str(candidate["source_path"])]
+        action = decision["decision"]
+        if candidate["change"] == "path-corrected" and action != "import":
+            raise IntakeError("path corrections must be imported")
+        if candidate["change"] == "modified" and action not in {
+            "import",
+            "canonical",
+            "quarantine",
+        }:
+            raise IntakeError(
+                "modified source updates must be imported, canonicalized, or quarantined"
+            )
+        if candidate["change"] == "added" and action not in {
+            "import",
+            "canonical",
+            "quarantine",
+        }:
+            raise IntakeError(
+                "added source updates must be imported, canonicalized, or quarantined"
+            )
+        license_value = candidate.get("license")
+        if action in {"import", "canonical"} and (
+            not isinstance(license_value, str)
+            or not license_value.strip()
+            or license_value.strip().upper() == "UNKNOWN"
+        ):
+            raise IntakeError(
+                "active source update requires per-skill license evidence"
+            )
+
+    with tempfile.TemporaryDirectory(prefix="asr-update-recheck-") as temporary:
+        regenerated_stage = Path(temporary) / "stage"
+        prepare_source_update(root, source, regenerated_stage)
+        if (regenerated_stage / "manifest.json").read_bytes() != manifest_bytes:
+            raise IntakeError("source update manifest no longer matches repository")
+
+    sources_payload = _load_json_object(root / "registry/sources.lock.json")
+    sources = sources_payload.get("sources")
+    if not isinstance(sources, list):
+        raise IntakeError("source lock records are invalid")
+    source_index = next(
+        (
+            index
+            for index, item in enumerate(sources)
+            if isinstance(item, dict)
+            and item.get("source_id") == source["source_id"]
+        ),
+        None,
+    )
+    if source_index is None or sources[source_index].get("commit") != base_commit:
+        raise IntakeError("source update base commit does not match source lock")
+
+    index_payload = _load_json_object(root / "librarian-index.json")
+    entries = index_payload.get("entries")
+    safety_payload = _load_json_object(root / "registry/safety-signals.json")
+    profiles = safety_payload.get("profiles")
+    if not isinstance(entries, list) or not isinstance(profiles, list):
+        raise IntakeError("discovery or safety registry is invalid")
+
+    correction_by_path: dict[str, str] = {}
+    id_remap: dict[str, str] = {}
+    for correction in corrections:
+        if set(correction) != {"from", "skill_id", "to"} or not all(
+            isinstance(correction[field], str)
+            for field in ("from", "skill_id", "to")
+        ):
+            raise IntakeError("source path correction is invalid")
+        old_path = correction["from"]
+        new_path = correction["to"]
+        old_id = correction["skill_id"]
+        if old_path in correction_by_path or old_id in id_remap:
+            raise IntakeError("source path corrections are duplicated")
+        correction_by_path[old_path] = new_path
+        id_remap[old_id] = stable_skill_id(source["source_id"], new_path)
+
+    new_skills = [dict(record) for record in skills]
+    new_quarantine = [dict(record) for record in quarantine]
+    for record in [*new_skills, *new_quarantine]:
+        if record.get("source_id") != source["source_id"]:
+            if record.get("canonical_skill_id") in id_remap:
+                record["canonical_skill_id"] = id_remap[record["canonical_skill_id"]]
+            continue
+        old_path = str(record["source_path"])
+        new_path = correction_by_path.get(old_path, old_path)
+        record["source_path"] = new_path
+        record["skill_id"] = stable_skill_id(source["source_id"], new_path)
+        record["source_commit"] = source["commit"]
+        if record.get("canonical_skill_id") in id_remap:
+            record["canonical_skill_id"] = id_remap[record["canonical_skill_id"]]
+
+    new_entries = [dict(entry) for entry in entries]
+    for entry in new_entries:
+        if entry.get("skill_id") in id_remap:
+            entry["skill_id"] = id_remap[entry["skill_id"]]
+        if entry.get("canonical") in id_remap:
+            entry["canonical"] = id_remap[entry["canonical"]]
+    profiles_by_id: dict[str, dict[str, object]] = {}
+    for profile in profiles:
+        updated = dict(profile)
+        if updated.get("skill_id") in id_remap:
+            updated["skill_id"] = id_remap[updated["skill_id"]]
+        profiles_by_id[str(updated["skill_id"])] = updated
+
+    records_by_source_path = {
+        str(record["source_path"]): record
+        for record in [*new_skills, *new_quarantine]
+        if record.get("source_id") == source["source_id"]
+    }
+    entries_by_load_name = {
+        str(entry.get("flat_name")): entry for entry in new_entries
+    }
+    used_names = {
+        str(record["load_name"])
+        for record in [*new_skills, *new_quarantine]
+        if isinstance(record.get("load_name"), str)
+    }
+    candidate_by_path = {
+        str(candidate["source_path"]): candidate for candidate in candidates
+    }
+    replacements: list[tuple[str, Path]] = []
+    additions: list[tuple[str, Path]] = []
+    added_count = 0
+    modified_count = 0
+    quarantined_count = 0
+
+    with tempfile.TemporaryDirectory(prefix="asr-commit-update-") as temporary:
+        checkout = Path(temporary) / "source"
+        checkout_pinned_source(source, checkout)
+        metadata_index = sources[source_index].get("metadata_index")
+        if isinstance(metadata_index, str) and metadata_index:
+            target_bundles, _ = indexed_source_bundles(
+                checkout, metadata_index, source["skills_root"]
+            )
+        else:
+            target_bundles = {
+                bundle.relative_to(checkout).as_posix(): bundle
+                for bundle in discover_source_bundles(
+                    checkout / source["skills_root"]
+                )
+            }
+
+        for source_path in sorted(candidate_by_path):
+            candidate = candidate_by_path[source_path]
+            decision = decision_by_path[source_path]
+            action = str(decision["decision"])
+            canonical_target = decision["canonical_skill_id"]
+            if isinstance(canonical_target, str):
+                canonical_target = id_remap.get(canonical_target, canonical_target)
+            existing = records_by_source_path.get(source_path)
+            if existing is not None:
+                entry = entries_by_load_name[str(existing["load_name"])]
+                entry["skill_id"] = existing["skill_id"]
+                entry["taxonomy"] = decision["taxonomy"]
+                entry["category_fine"] = decision["category_fine"]
+                if candidate["change"] == "modified":
+                    candidate_license = candidate.get("license")
+                    if isinstance(candidate_license, str) and candidate_license.strip():
+                        existing["license"] = candidate_license.strip()
+                    existing.update(
+                        {
+                            "name": candidate["name"],
+                            "content_sha256": candidate["content_sha256"],
+                            "risk": "unknown",
+                            "risk_reasons": ["initial-review-required"],
+                        }
+                    )
+                    entry.update(
+                        {
+                            "name": candidate["name"],
+                            "description": candidate["description"],
+                            "risk": "unknown",
+                            "license": existing["license"],
+                            "canonical": canonical_target,
+                        }
+                    )
+                    existing["canonical_skill_id"] = canonical_target
+                    if action == "quarantine":
+                        if existing in new_skills:
+                            new_skills.remove(existing)
+                        if existing not in new_quarantine:
+                            new_quarantine.append(existing)
+                        existing.update(
+                            {
+                                "state": "quarantined",
+                                "rule_ids": ["reviewed-update-quarantine"],
+                                "disposition": "quarantined",
+                                "canonical_skill_id": None,
+                            }
+                        )
+                        entry["canonical"] = None
+                        quarantined_count += 1
+                    else:
+                        if existing in new_quarantine:
+                            new_quarantine.remove(existing)
+                        if existing not in new_skills:
+                            new_skills.append(existing)
+                        existing.pop("rule_ids", None)
+                        existing.pop("disposition", None)
+                        existing["state"] = "active"
+                        profiles_by_id[str(existing["skill_id"])] = {
+                            "skill_id": existing["skill_id"],
+                            **candidate["safety_profile"],
+                        }
+                    replacements.append(
+                        (str(existing["catalog_path"]), target_bundles[source_path])
+                    )
+                    modified_count += 1
+                continue
+
+            load_name = next_load_name(
+                slugify_load_name(str(candidate["name"])),
+                source["source_id"],
+                used_names,
+            )
+            used_names.add(load_name)
+            catalog_path, destination = catalog_destination(
+                root, str(decision["taxonomy"]), load_name
+            )
+            skill_id = stable_skill_id(source["source_id"], source_path)
+            candidate_license = candidate.get("license")
+            license_value = (
+                candidate_license.strip()
+                if isinstance(candidate_license, str) and candidate_license.strip()
+                else "UNKNOWN"
+            )
+            record = {
+                "skill_id": skill_id,
+                "name": candidate["name"],
+                "load_name": load_name,
+                "catalog_path": catalog_path,
+                "source_id": source["source_id"],
+                "source_commit": source["commit"],
+                "source_path": source_path,
+                "content_sha256": candidate["content_sha256"],
+                "license": license_value,
+                "risk": "unknown",
+                "risk_reasons": ["initial-review-required"],
+                "state": "quarantined" if action == "quarantine" else "active",
+                "canonical_skill_id": canonical_target,
+                "first_seen_version": "0.4.0",
+            }
+            if action == "quarantine":
+                record.update(
+                    {
+                        "rule_ids": ["reviewed-update-quarantine"],
+                        "disposition": "quarantined",
+                    }
+                )
+                new_quarantine.append(record)
+                quarantined_count += 1
+            else:
+                new_skills.append(record)
+            records_by_source_path[source_path] = record
+            new_entries.append(
+                {
+                    "skill_id": skill_id,
+                    "name": candidate["name"],
+                    "flat_name": load_name,
+                    "taxonomy": decision["taxonomy"],
+                    "category_fine": decision["category_fine"],
+                    "description": candidate["description"],
+                    "risk": "unknown",
+                    "license": license_value,
+                    "canonical": canonical_target,
+                }
+            )
+            if action != "quarantine":
+                profiles_by_id[skill_id] = {
+                    "skill_id": skill_id,
+                    **candidate["safety_profile"],
+                }
+            additions.append((catalog_path, target_bundles[source_path]))
+            added_count += 1
+
+        artifact_relative = (
+            "registry/source-reviews/"
+            f"{source['source_id']}-{source['commit']}.json"
+        )
+        artifact_path = root / artifact_relative
+        if artifact_path.exists() or artifact_path.is_symlink():
+            raise IntakeError(f"source review artifact already exists: {artifact_relative}")
+        artifact = source_review_artifact(
+            source, manifest_bytes, candidates, decisions
+        )
+        new_sources = [dict(item) for item in sources]
+        updated_source = dict(new_sources[source_index])
+        updated_source.update(
+            {
+                "commit": source["commit"],
+                "license_note": source["license_note"],
+                "review": {
+                    "status": "reviewed",
+                    "artifact": artifact_relative,
+                    "manifest_sha256": artifact["manifest_sha256"],
+                },
+            }
+        )
+        new_sources[source_index] = updated_source
+        new_sources_payload = {**sources_payload, "sources": new_sources}
+        new_skills_payload = {**skills_payload, "skills": new_skills}
+        new_quarantine_payload = {**quarantine_payload, "records": new_quarantine}
+        new_index_payload = {**index_payload, "entries": new_entries}
+        new_index_payload["count"] = len(new_entries)
+        active_ids = sorted(
+            str(record["skill_id"])
+            for record in new_skills
+            if record.get("state") == "active"
+        )
+        new_safety_payload = {
+            "schema_version": 1,
+            "profiles": [profiles_by_id[skill_id] for skill_id in active_ids],
+        }
+        upstream_path = root / "registry/upstream-review.json"
+        upstream_payload = _load_json_object(upstream_path)
+        if upstream_payload.get("source_id") == source["source_id"]:
+            upstream_payload = {
+                **upstream_payload,
+                "pinned_commit": source["commit"],
+                "observed_commit": source["commit"],
+                "records": [],
+            }
+        _validate_commit_objects(
+            new_sources_payload, new_skills_payload, new_quarantine_payload
+        )
+        if not valid_safety_registry(new_safety_payload, new_skills):
+            raise IntakeError("safety profile records are invalid")
+
+        json_paths = [
+            root / "registry/sources.lock.json",
+            root / "registry/skills.json",
+            root / "registry/quarantine.json",
+            root / "librarian-index.json",
+            root / "registry/safety-signals.json",
+            upstream_path,
+        ]
+        json_payloads = [
+            new_sources_payload,
+            new_skills_payload,
+            new_quarantine_payload,
+            new_index_payload,
+            new_safety_payload,
+            upstream_payload,
+        ]
+        original_bytes = {path: path.read_bytes() for path in json_paths}
+        backups: list[tuple[Path, Path]] = []
+        created: list[Path] = []
+        created_parents: list[Path] = []
+        temporary_copies: list[Path] = []
+        artifact_created = False
+        try:
+            backup_root = Path(temporary) / "backups"
+            backup_root.mkdir()
+            for backup_index, (relative, bundle) in enumerate(replacements):
+                destination = root / relative
+                temporary_copy = Path(
+                    tempfile.mkdtemp(
+                        dir=destination.parent, prefix=f".{destination.name}.new."
+                    )
+                )
+                temporary_copies.append(temporary_copy)
+                shutil.copytree(bundle, temporary_copy, dirs_exist_ok=True)
+                backup = backup_root / str(backup_index)
+                destination.replace(backup)
+                backups.append((destination, backup))
+                temporary_copy.replace(destination)
+                temporary_copies.remove(temporary_copy)
+            catalog_root = (root / "catalog").resolve()
+            for relative, bundle in additions:
+                destination = root / relative
+                _create_parent_directories(
+                    destination, catalog_root, created_parents
+                )
+                temporary_copy = Path(
+                    tempfile.mkdtemp(
+                        dir=destination.parent, prefix=f".{destination.name}.new."
+                    )
+                )
+                temporary_copies.append(temporary_copy)
+                shutil.copytree(bundle, temporary_copy, dirs_exist_ok=True)
+                temporary_copy.replace(destination)
+                temporary_copies.remove(temporary_copy)
+                created.append(destination)
+            for path, payload in zip(json_paths, json_payloads):
+                dump_json_atomic(path, payload)
+            dump_json_atomic(artifact_path, artifact)
+            artifact_created = True
+            report = verify_repository(root)
+            if report.result != "pass":
+                check_ids = sorted(
+                    str(finding.get("check_id"))
+                    for finding in report.findings
+                )
+                raise IntakeError(
+                    "post-update strict verification failed: "
+                    + ", ".join(check_ids)
+                )
+        except Exception:
+            for path, content in original_bytes.items():
+                _restore_bytes_atomic(path, content)
+            if artifact_created:
+                artifact_path.unlink(missing_ok=True)
+            for temporary_copy in temporary_copies:
+                shutil.rmtree(temporary_copy, ignore_errors=True)
+            for destination in reversed(created):
+                shutil.rmtree(destination, ignore_errors=True)
+            for destination, backup in reversed(backups):
+                shutil.rmtree(destination, ignore_errors=True)
+                if backup.exists():
+                    backup.replace(destination)
+            for parent in reversed(created_parents):
+                try:
+                    parent.rmdir()
+                except OSError:
+                    pass
+            raise
+        for _, backup in backups:
+            shutil.rmtree(backup)
+
+    return {
+        "added": added_count,
+        "modified": modified_count,
+        "quarantined": quarantined_count,
+        "path_corrected": len(corrections),
         "result": "pass",
         "strict_verifier": "pass",
     }

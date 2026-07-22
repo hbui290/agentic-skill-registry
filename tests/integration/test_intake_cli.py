@@ -278,6 +278,93 @@ def test_commit_source_text_reports_counts_and_strict_verifier(
     assert INSTRUCTIONS not in captured.out
 
 
+def test_prepare_source_update_json_reports_delta_counts(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.setattr(
+        cli,
+        "prepare_source_update",
+        lambda root, spec, staging: {
+            "path_corrections": [{"from": "old", "to": "new"}],
+            "candidates": [
+                {"change": "path-corrected"},
+                {"change": "modified"},
+                {"change": "added"},
+            ],
+        },
+        raising=False,
+    )
+
+    result = cli.main(
+        [
+            "prepare-update",
+            "--root",
+            str(tmp_path),
+            "--source-id",
+            "existing-source",
+            "--url",
+            "https://github.com/example/existing.git",
+            "--commit",
+            "c" * 40,
+            "--skills-root",
+            "skills",
+            "--license",
+            "per-skill",
+            "--license-note",
+            "reviewed",
+            "--staging",
+            str(tmp_path.parent / "stage"),
+            "--format",
+            "json",
+        ]
+    )
+
+    assert result == 0
+    assert json.loads(capsys.readouterr().out) == {
+        "added": 1,
+        "modified": 1,
+        "path_corrected": 1,
+        "result": "prepared",
+        "review_required_count": 3,
+    }
+
+
+def test_commit_source_update_json_reports_result(monkeypatch, capsys, tmp_path):
+    manifest = tmp_path / "manifest.json"
+    review = tmp_path / "review.json"
+    manifest.write_text("{}\n", encoding="utf-8")
+    review.write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr(
+        cli,
+        "commit_source_update",
+        lambda root, manifest, review: {
+            "added": 39,
+            "modified": 20,
+            "path_corrected": 100,
+            "result": "pass",
+            "strict_verifier": "pass",
+        },
+        raising=False,
+    )
+
+    result = cli.main(
+        [
+            "commit-update",
+            "--root",
+            str(tmp_path),
+            "--manifest",
+            str(manifest),
+            "--review",
+            str(review),
+            "--format",
+            "json",
+        ]
+    )
+
+    assert result == 0
+    assert json.loads(capsys.readouterr().out)["strict_verifier"] == "pass"
+
+
 def test_commit_source_os_error_is_reported_without_traceback(monkeypatch, capsys, tmp_path):
     def fail(*_args):
         raise OSError("fixture read failure")
