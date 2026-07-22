@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 
@@ -94,15 +95,37 @@ def _manifest_and_skill(root: Path) -> tuple[Path, str, Path]:
     return manifest_path, native_skill_path, skill
 
 
+def _native_skill_bundle(root: Path, native_skill_path: str) -> list[Path]:
+    bundle_root = root / Path(native_skill_path).parent
+    files: list[Path] = []
+    try:
+        for directory, directories, names in os.walk(bundle_root, followlinks=False):
+            directory_path = Path(directory)
+            for name in [*directories, *names]:
+                if (directory_path / name).is_symlink():
+                    raise IntegrationValidationError("native skill bundle contains a symlink")
+            for name in names:
+                path = directory_path / name
+                if not path.is_file():
+                    raise IntegrationValidationError("native skill bundle contains a non-file")
+                files.append(path)
+    except OSError as error:
+        raise IntegrationValidationError("native skill bundle is unavailable") from error
+    return sorted(files, key=lambda path: path.relative_to(root).as_posix())
+
+
 def build_librarian_integration_lock(root: Path) -> dict[str, object]:
-    manifest_path, native_skill_path, skill = _manifest_and_skill(root)
+    manifest_path, native_skill_path, _ = _manifest_and_skill(root)
     return {
         "schema_version": 1,
         "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-        "files": [{
-            "path": native_skill_path,
-            "sha256": hashlib.sha256(skill.read_bytes()).hexdigest(),
-        }],
+        "files": [
+            {
+                "path": path.relative_to(root).as_posix(),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in _native_skill_bundle(root, native_skill_path)
+        ],
     }
 
 
@@ -114,12 +137,14 @@ def _validate_lock(payload: dict[str, object], expected: dict[str, object]) -> N
     files = payload.get("files")
     if (
         not isinstance(files, list)
-        or len(files) != 1
-        or not isinstance(files[0], dict)
-        or set(files[0]) != LOCK_FILE_FIELDS
-        or not isinstance(files[0].get("path"), str)
-        or not isinstance(files[0].get("sha256"), str)
-        or SHA256.fullmatch(files[0]["sha256"]) is None
+        or not all(
+            isinstance(file, dict)
+            and set(file) == LOCK_FILE_FIELDS
+            and isinstance(file.get("path"), str)
+            and isinstance(file.get("sha256"), str)
+            and SHA256.fullmatch(file["sha256"]) is not None
+            for file in files
+        )
     ):
         raise IntegrationValidationError("integration lock files are invalid")
     if payload != expected:

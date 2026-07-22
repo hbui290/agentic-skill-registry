@@ -1,10 +1,38 @@
 {
   "files": [
     {
+      "path": "skills/skill-librarian/.DS_Store",
+      "sha256": "9709714d43af750600804f7eb65e1247c32fac788ac98a963c97e5f783a4517e"
+    },
+    {
       "path": "skills/skill-librarian/SKILL.md",
-      "sha256": "c384fb4e877403a063e388e9786ae3475739d6c6937429ac240c85019b3d2130"
+      "sha256": "c8d5dacd795753a806122afed48f1294f0a41f3db085ac7e92013ad15b3d6ec6"
+    },
+    {
+      "path": "skills/skill-librarian/references/composition.md",
+      "sha256": "66def5395260622cc7c4be96b002879f2579f289f9cb41d0b7d39cc27594cbab"
+    },
+    {
+      "path": "skills/skill-librarian/references/control-plane.md",
+      "sha256": "8a6a011d62e265f296c1608697d872dea8ecbb1cd7daf355da884e2cf3a64d22"
+    },
+    {
+      "path": "skills/skill-librarian/references/decision-trace.md",
+      "sha256": "4e63f69889395f4289f7f56778b31fe9a9f783187fc758b67656f62fa206d6e5"
+    },
+    {
+      "path": "skills/skill-librarian/references/evaluation.md",
+      "sha256": "87ec6804742599a87d049616c62a6bc28bdc256a639b2b798edb8d17c6cd70fd"
+    },
+    {
+      "path": "skills/skill-librarian/references/source-intake.md",
+      "sha256": "dbb78a22d3e9dc869eb78ffe338c0afdc4890278eb1314dbdeaf25f5d052515d"
+    },
+    {
+      "path": "skills/skill-librarian/references/trust-and-safety.md",
+      "sha256": "532d9c89ad84bb58e6412efff3635f62408228204166fdc34458044ee7c771e4"
     }
   ],
-  "manifest_sha256": "12d24ac646a2d45fbdc5daeecd9be39b7be3403d5ccdbc7fa69c446a02647cce",
+  "manifest_sha256": "8bf79c1f1817123fb46043afe52c9a7632276c5fd5a0aa626010a9b3d905f5db",
   "schema_version": 1
 }
