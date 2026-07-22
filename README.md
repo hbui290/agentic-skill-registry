@@ -1,152 +1,98 @@
 # Agentic Skill Library
 
-> Give an AI agent a large skill library without dumping the whole library into
-> its context.
+> A verified, on-demand skill library for AI agents — search first, read only
+> what the task needs.
 
-Agentic Skill Library is an on-demand, verified library for AI-agent skills.
-It helps an agent find the few instructions relevant to the work in front of
-it, verify that their files still match the catalog, then use only those
-instructions.
+Agentic Skill Library keeps a large skill catalog outside an agent's default
+context. The Librarian finds relevant skills for the current phase, verifies
+their provenance and content hash, then returns only the selected instructions.
 
-It is built for people who want the breadth of a large skill collection without
-the token cost, conflicting guidance, or supply-chain blind spots of installing
-everything at once.
+## Quick start on macOS
 
-## The idea in one minute
+Requires Git, Python 3.11+, and [uv](https://docs.astral.sh/uv/).
 
-Most skill collections answer: “Here are thousands of files. Install them.”
+```bash
+git clone --branch codex/safety-profiles \
+  https://github.com/hbui290/agentic-skill-library.git \
+  ~/.agents/agentic-skill-library
 
-This project answers: “Keep the files in a library. Let a Librarian find the
-right ones only when needed.”
+uv tool install --editable ~/.agents/agentic-skill-library
+export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-library"
 
-```text
-Your request
-→ AI agent
-→ Librarian searches the library
-→ chooses the relevant skills for this phase
-→ verifies policy and file integrity
-→ reads only the selected instructions
-→ agent does the work
+skill-registry verify --root "$AGENTIC_SKILL_REGISTRY_ROOT" --strict
 ```
 
-The `catalog/` is the library shelf. It is not installed into Codex. The only
-native skill from this repository is `skill-librarian`.
+The global CLI is `skill-registry`. The catalog itself is not installed into
+Codex. Install only [`skills/skill-librarian`](skills/skill-librarian/) as a
+native Codex skill; do not bulk-copy `catalog/` to `~/.codex/skills`.
 
-## Why it exists
+## How it works
 
-Large skill packs are useful, but installing all of them creates practical
-problems:
+```text
+Task → Librarian search → select a few skills → verify path + hash → read them
+```
 
-- Too many instructions consume context and can conflict with each other.
-- A source file can change after it is cataloged; the agent needs an integrity check before reading it.
-- Skills change upstream; it should be possible to know where a copy came from.
-- An agent needs a repeatable way to select several complementary skills for a
-  complex task.
+- Search works from compact metadata, not every instruction file.
+- `read` validates state, path containment, symlinks, and the bundle hash.
+- Each record carries source, pinned commit, license, and content hash.
+- New sources follow `prepare → review → commit`; no automatic promotion.
 
-Agentic Skill Library keeps the useful part of a large catalog while adding
-selection, provenance, and integrity checks.
+## Everyday use
 
-## What you get
+```bash
+registry="$AGENTIC_SKILL_REGISTRY_ROOT"
 
-- **On-demand routing:** the Librarian searches metadata first, then reads only
-  the selected `SKILL.md` files.
-- **Clear trigger:** use the Librarian for complex, unfamiliar, specialized, or
-  multi-part work; skip it for simple general reasoning or when a specific
-  native skill already fully covers the task.
-- **Small working context:** up to eight domain skills are loaded at the same
-  time in one phase; the Librarian prefers one to five. A larger task may use
-  new batches in later phases.
-- **Visible routing:** when the Librarian loads skills, it begins that phase
-  with one short line such as `Librarian P1: pdf (single)`. It names only
-  skills whose integrity-checked reads actually succeeded. It does not claim a
-  skill was used if the phase has no successful registry search and read
-  results.
-- **Integrity checks before reading:** availability, source, file path, symlink, and content-hash checks happen before instructions are returned.
-- **Static safety signals:** a cached scan reports matching static signals for the
-  current bundle; `scanned` is evidence to review, never a safety approval.
-- **Traceable sources:** every catalog record has a source, pinned commit,
-  license, and content hash.
-- **Controlled growth:** new public GitHub sources go through
-  `prepare → review → commit`; they are never silently imported or promoted.
+skill-registry search --root "$registry" --limit 5 --format json "security audit"
+skill-registry read --root "$registry" --format json skill-librarian
+skill-registry verify --root "$registry" --strict
+```
+
+Use the Librarian for complex, unfamiliar, specialised, or multi-part work.
+Skip it for a simple task or when one known native skill already covers it.
+
+## Safety signals
+
+Every active bundle has a cached static profile keyed to its content hash and
+scanner version. A profile can report `shell`, `network`, `credential`,
+`filesystem_write`, or `prompt_injection` evidence.
+
+`scanned` means static evidence was collected; it is **not** safety approval.
+`unscanned`, `stale`, and `scan_error` are conservative states. The registry
+does not enforce tools, block every `unknown` skill, or create approval flows.
+The consumer agent compares a planned action with task scope and asks the owner
+when it would exceed scope or a high-risk signal needs confirmation.
 
 ## Current library
 
-| | Current state |
+| Item | State |
 | --- | --- |
-| Catalog entries | 1,953 active records |
-| Searchable records | 1,949 (exact duplicates are hidden from search) |
-| Quarantine | 2 blocked records |
-| Native installation | `skill-librarian` only |
+| Active catalog records | 1,953 |
+| Searchable records | 1,949 |
+| Quarantined records | 2 |
+| Native Codex installation | `skill-librarian` only |
 
-`active` means a record is available to the library. Any active, non-blocked
-skill can be read after its path and content hash pass integrity checks. Risk
-and Core labels are metadata; they are not an approval workflow.
+## Limits by design
 
-Safety profiles are also metadata. They are cached against the bundle content
-hash and scanner version, so a changed bundle or scanner produces a `stale`
-profile until it is scanned again. The Registry does not enforce the tools a
-profile names or ask for confirmation. The consumer agent compares the planned
-action with the task scope and signals, and asks the owner only when the action
-is outside that scope or a high-risk signal requires confirmation.
-
-## Start here
-
-Requirements: Python 3.11+ and Git.
-
-```bash
-git clone https://github.com/hbui290/agentic-skill-library.git \
-  ~/.agents/agentic-skill-library
-cd ~/.agents/agentic-skill-library
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
-
-export AGENTIC_SKILL_REGISTRY_ROOT="$HOME/.agents/agentic-skill-library"
-skill-registry verify --strict
-```
-
-Then install only [`skills/skill-librarian`](skills/skill-librarian/) using
-OpenAI's `$skill-installer`. Do **not** install `catalog/` into
-`~/.codex/skills`.
-
-For the complete first-use walkthrough, including search and integrity-checked
-reading, see [Getting started](docs/getting-started.md).
-
-## What this is not
-
-- Not a complete agent application or agent framework.
 - Not an MCP server, marketplace, vector database, or bulk installer.
-- Automatic bulk import is deliberately disabled.
-- Not permission to run every catalog skill automatically.
-- Not tool-level capability enforcement or an automatic approval system.
-- Not a replacement for Official Superpowers: Superpowers guides the process;
-  the Librarian selects domain-specific playbooks.
+- Not tool-level capability enforcement or a permission broker.
+- Not permission to execute every instruction a skill contains.
 
-## Learn more
+## Documentation
 
-- [Getting started](docs/getting-started.md) — install, search, read, and
-  integrity behavior.
-- [Architecture](docs/architecture.md) — Process, Routing, Trust, and
-  Knowledge layers.
-- [Integrity model](docs/trust-model.md) — what `active`, blocked states, and
-  file verification mean.
-- [Adding a source](docs/source-intake.md) — reviewed multi-source intake.
-- [Migration guide](docs/migration-from-agentic-library.md) — moving from the
-  previous library design.
+- [Getting started](docs/getting-started.md)
+- [Trust model](docs/trust-model.md)
+- [Architecture](docs/architecture.md)
+- [Adding a source](docs/source-intake.md)
+- [Migration guide](docs/migration-from-agentic-library.md)
 
-## For contributors
+## Contributors
 
 ```bash
-python -m pytest -q
-skill-registry verify --strict
-skill-registry refresh --format json
+uv run --extra dev pytest -q
+uv run --extra dev skill-registry verify --root . --strict
 git diff --check
 ```
 
-CI runs the suite on Python 3.11–3.14. JSON search output uses the stable shape
-`{"query": "...", "matches": [...]}`; search metadata never includes skill
-instructions.
-
-Changes to the catalog or registry are reviewed changes. Use `git revert` to
-roll back a committed change—do not hand-edit catalog and registry files to
-simulate a rollback.
+CI runs Python 3.11–3.14. Registry and catalog changes are reviewed commits;
+use `git revert` to roll them back instead of hand-editing generated registry
+files.
