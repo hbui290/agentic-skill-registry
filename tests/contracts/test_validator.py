@@ -124,6 +124,14 @@ def test_strict_verifier_rejects_profile_with_stale_hash(repo_root, tmp_path):
     assert verify_repository(root).result == "fail"
 
 
+def test_strict_verifier_rejects_boolean_scanner_version(repo_root, tmp_path):
+    root = clone_repository_fixture(repo_root, tmp_path)
+    copy_librarian_index(repo_root, root)
+    write_safety_profiles(root, scanner_version=True)
+
+    assert verify_repository(root).result == "fail"
+
+
 def test_strict_verifier_rejects_low_prompt_injection_profile(repo_root, tmp_path):
     root = clone_repository_fixture(repo_root, tmp_path)
     copy_librarian_index(repo_root, root)

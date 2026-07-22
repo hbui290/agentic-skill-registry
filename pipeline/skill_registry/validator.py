@@ -240,6 +240,8 @@ def valid_safety_registry(
             not isinstance(skill_id, str)
             or skill_id not in active
             or profile.get("content_sha256") != active[skill_id]["content_sha256"]
+            or not isinstance(profile.get("scanner_version"), int)
+            or isinstance(profile.get("scanner_version"), bool)
             or profile.get("scanner_version") != SAFETY_SCANNER_VERSION
             or profile.get("status") not in {"scanned", "scan_error"}
             or not isinstance(signals, list)

@@ -505,6 +505,9 @@ def prepare_source(root: Path, spec: object, staging: Path) -> dict[str, object]
                     "name": inspected["name"],
                     "description": inspected["description"],
                     "content_sha256": inspected["content_sha256"],
+                    "safety_profile": scan_skill_bundle(
+                        bundle, str(inspected["content_sha256"])
+                    ),
                     "file_count": inspected["file_count"],
                     "byte_count": inspected["byte_count"],
                     "proposed_taxonomy": classification["taxonomy"],
