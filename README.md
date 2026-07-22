@@ -45,7 +45,7 @@ Task → Librarian search → select a few skills → verify path + hash → rea
 registry="$AGENTIC_SKILL_REGISTRY_ROOT"
 
 skill-registry search --root "$registry" --limit 5 --format json "security audit"
-skill-registry read --root "$registry" --format json skill-librarian
+skill-registry read --root "$registry" --format json aws-security-audit
 skill-registry verify --root "$registry" --strict
 ```
 
