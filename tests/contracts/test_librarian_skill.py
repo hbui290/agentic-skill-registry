@@ -173,8 +173,25 @@ def test_librarian_scenarios_cover_routing_boundaries(repo_root):
         "## 12. Multi-domain task",
         "## 13. No match",
         "## 14. CLI failure",
+        "## 15. Blocked read",
+        "## 16. High-risk signal boundary",
+        "## 17. Reference selection",
+        "## 18. Multi-phase handoff",
     ]
     assert all(heading in scenarios for heading in required_headings)
+
+    required_boundaries = [
+        "Policy: blocked",
+        "static evidence",
+        "not Registry approval or a tool-level block",
+        "only before the planned action exceeds scope or the high-risk signal needs confirmation",
+        "always-loaded router reads only its control-plane and",
+        "It reads trust, composition, source-intake, or evaluation references only when that current phase needs their guidance",
+        "each phase performs a new search, selection, and read decision",
+        "no earlier domain `SKILL.md` or router reference is automatically kept",
+    ]
+    normalized_scenarios = " ".join(scenarios.split())
+    assert all(boundary in normalized_scenarios for boundary in required_boundaries)
 
 
 def test_architecture_docs_keep_catalog_out_of_native_discovery(repo_root):
