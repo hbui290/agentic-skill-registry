@@ -7,6 +7,8 @@ __pycache__/
 *.json.tmp
 .worktrees/
 .superpowers/
+.depwire/
+pipeline/.depwire/
 *.egg-info/
 
 # Regenerable upstream index cache (rebuilt by update_skills.py each run)
